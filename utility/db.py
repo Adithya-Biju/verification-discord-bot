@@ -21,6 +21,13 @@ try:
             "user_id":user,
             "util":"standard"
             })
+    
+    async def struct_keys(email,user):
+        await verification.insert_one({
+            "email":email,
+            "user_id":user,
+            "dm":0
+        })
 
     async def find_email_main(email):
         return await verification.find_one({'email':email})

@@ -43,7 +43,7 @@ class database(commands.Cog):
                     if util.value == 1:
                         
                         await db.struct_premium(email,member.id)
-                        await db.update_keys(email,member.id)
+                        await db.struct_keys(email,member.id)
                         self.response = await db.find_email_main(email)
                         await interaction.followup.send(f'''Successfully registered, RUN /CHECK COMMAND TO GIVE THEM ROLES AND SEND A KEY ''',ephemeral=True)
                     
@@ -126,10 +126,10 @@ class database(commands.Cog):
         except Exception as e:
             print(e)
             await interaction.response.send_message("Unexpected error occured")
-
         
-    @app_commands.command(name = "update_user", description= " Update a registered user ID")
-    async def update_user(self,interaction:discord.Interaction,OldUser:discord.Member,NewUser:discord.Member):
+    
+    @app_commands.command(name = "update_email", description= " Update a registered email ID")
+    async def update_email(self,interaction:discord.Interaction,old_email:str,new_email:str):
 
         try:
             await interaction.response.defer(ephemeral=True)
@@ -138,7 +138,7 @@ class database(commands.Cog):
                 await interaction.followup.send("You don't have the adequate permissions to use this command",ephemeral=True)
             
             else:
-                self.info = await db.find_user(OldUser.id)
+                self.info = await db.find_email_main(old_email)
 
                 if self.info == None:
                     
@@ -146,8 +146,45 @@ class database(commands.Cog):
                 
                 elif self.info != None:
                     
-                    await db.UpdateUser(OldUser,NewUser)
-                    self.info = await db.find_user(NewUser)
+                    await db.UpdateEmail(old_email,new_email)
+                    self.info = await db.find_email_main(new_email)
+                    if self.info != None:
+                        await interaction.followup.send(f'''Successfully updated: -
+
+{self.info['email']}
+<@{self.info['user_id']}>
+{self.info['util']}''',ephemeral=True)
+                    else:
+                        await interaction.followup.send("Error")
+                
+                else:
+
+                    await interaction.response.send_message("Error",ephemeral=True)
+            
+        except Exception as e:
+            print(e)
+            await interaction.followup.send("Unexpected error occured")
+        
+    @app_commands.command(name = "update_user", description= " Update a registered user ID")
+    async def update_user(self,interaction:discord.Interaction,old_user:discord.Member,new_user:discord.Member):
+
+        try:
+            await interaction.response.defer(ephemeral=True)
+
+            if interaction.permissions.administrator == False:
+                await interaction.followup.send("You don't have the adequate permissions to use this command",ephemeral=True)
+            
+            else:
+                self.info = await db.find_user(old_user.id)
+
+                if self.info == None:
+                    
+                    await interaction.followup.send("User not found",ephemeral=True)
+                
+                elif self.info != None:
+                    
+                    await db.UpdateUser(old_user.id,new_user.id)
+                    self.info = await db.find_user(new_user.id)
                     if self.info != None:
                         await interaction.followup.send(f'''Successfully updated : -
 
@@ -166,45 +203,8 @@ class database(commands.Cog):
             await interaction.response.send_message("Unexpected error occured")
         
     
-    @app_commands.command(name = "update_email", description= " Update a registered email ID")
-    async def update_email(self,interaction:discord.Interaction,OldEmail:str,NewEmail:str):
-
-        try:
-            await interaction.response.defer(ephemeral=True)
-
-            if interaction.permissions.administrator == False:
-                await interaction.followup.send("You don't have the adequate permissions to use this command",ephemeral=True)
-            
-            else:
-                self.info = await db.find_email_main(OldEmail)
-
-                if self.info == None:
-                    
-                    await interaction.followup.send("User not found",ephemeral=True)
-                
-                elif self.info != None:
-                    
-                    await db.UpdateEmail(OldEmail,NewEmail)
-                    self.info = await db.find_email_main(NewEmail)
-                    if self.info != None:
-                        await interaction.followup.send(f'''Successfully updated: -
-
-{self.info['email']}
-<@{self.info['user_id']}>
-{self.info['util']}''',ephemeral=True)
-                    else:
-                        await interaction.followup.send("Error")
-                
-                else:
-
-                    await interaction.response.send_message("Error",ephemeral=True)
-            
-        except Exception as e:
-            print(e)
-            await interaction.followup.send("Unexpected error occured")
-    
     @app_commands.command(name = "delete_user", description= "Delete user info using their User ID")
-    async def update_user(self,interaction:discord.Interaction,member:str):
+    async def delete_user(self,interaction:discord.Interaction,member:str):
 
         try:
             await interaction.response.defer(ephemeral=True)
@@ -233,7 +233,7 @@ class database(commands.Cog):
             await interaction.response.send_message("Unexpected error occured")
 
     @app_commands.command(name = "delete_email", description= "Delete email info using their email ID")
-    async def update_user(self,interaction:discord.Interaction,email:str):
+    async def delete_email(self,interaction:discord.Interaction,email:str):
 
         try:
             await interaction.response.defer(ephemeral=True)
