@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from utility import db,key,payment
+import settings
 
 
 class Verify(commands.Cog):
@@ -18,8 +19,11 @@ class Verify(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def sync(self, ctx) -> None:
-        fmt = await self.bot.tree.sync(guild=ctx.guild)
-        await ctx.send(f"Synced {len(fmt)} commands.")
+            try:
+                fmt = await self.bot.tree.sync(guild=ctx.guild)
+                await ctx.send(f"Synced {len(fmt)} commands.")
+            except Exception as e:
+                print(e)
 
     ## VERIFY COMMAND USING A MAIL ID INPUT ##
 
@@ -91,7 +95,7 @@ class Verify(commands.Cog):
                         await db.update_keys(email,interaction.user.id)
                         await interaction.followup.send("Successfully registered",ephemeral=True)
 
-                        self.prem_key =  await key.premium_key()
+                        self.prem_key =  await key.prem_key()
                         
                         if self.prem_key == False:
 
@@ -124,7 +128,7 @@ class Verify(commands.Cog):
                 
                 elif self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==0 and self.info["util"]=="premium":
 
-                    self.prem_key = await key.premium_key()
+                    self.prem_key = await key.prem_key()
 
                     if self.prem_key == False:
 
@@ -269,7 +273,7 @@ class Verify(commands.Cog):
                         await db.update_keys(email,interaction.user.id)
                         await interaction.followup.send("Successfully registered",ephemeral=True)
 
-                        self.prem_key =  await key.premium_key()
+                        self.prem_key =  await key.prem_key()
                         
                         if self.prem_key == False:
 
@@ -318,7 +322,7 @@ class Verify(commands.Cog):
 
                         await interaction.user.add_roles(self.premium_role)
                         await interaction.followup.send("Added premium role successfully")
-                        self.prem_key =  await key.premium_key()
+                        self.prem_key =  await key.prem_key()
                         
                         if self.prem_key == False:
 
@@ -362,5 +366,5 @@ class Verify(commands.Cog):
             await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(Verify(bot),guilds = [discord.Object(id=1198137813800079480)])
+        await bot.add_cog(Verify(bot),guilds = [discord.Object(id=settings.GUILD_ID)])
             

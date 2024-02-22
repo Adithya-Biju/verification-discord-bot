@@ -1,7 +1,8 @@
 import discord 
 from discord.ext import commands
 from discord import app_commands
-from utility import db,key,payment
+from utility import db,payment
+import settings
 
 class database(commands.Cog):
 
@@ -264,6 +265,6 @@ class database(commands.Cog):
 
     
 async def setup(bot):
-    await bot.add_cog(database(bot),guilds = [discord.Object(id=1198137813800079480)])
+    await bot.add_cog(database(bot),guilds = [discord.Object(id=settings.GUILD_ID)])
     
     

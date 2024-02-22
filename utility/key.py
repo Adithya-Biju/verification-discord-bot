@@ -3,15 +3,15 @@ import settings
 
 try:
 
-    async def premium_key():
+    async def prem_key():
 
             async with aiohttp.ClientSession() as session:      
-                async with session.get(settings.TESTER_KEYS) as t_url:
+                async with session.get(settings.PREMIUM_KEY) as t_url:
                     if t_url.status == 200:
 
                         t_key = await t_url.text()
 
-                        if len(t_key) == 41 and t_key.startswith('TESTER'):                           
+                        if len(t_key) == 42 and t_key.startswith('PREMIUM'):                           
                             return t_key
                         
                         else:                           
@@ -20,7 +20,7 @@ try:
                     else:
                          return False
     
-    async def standard_key():
+    async def stan_key():
          
          async with aiohttp.ClientSession() as session:      
                 async with session.get(settings.STANDARD_KEYS) as s_url:

@@ -1,7 +1,6 @@
 import discord 
 from discord.ext import commands
 from discord import app_commands
-import stripe 
 import settings
 from utility import db,key,payment
 
@@ -103,7 +102,7 @@ class Check(commands.Cog):
                                 try:
                                     self.channel = await member.create_dm()
                                     await self.channel.send(f'''Premium key : -
-    {self.prem_key}''')
+{self.prem_key}''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send("Key sent in DMS",ephemeral=True)
                                 except discord.errors.Forbidden:
@@ -363,5 +362,5 @@ class Check(commands.Cog):
             await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(Check(bot),guilds = [discord.Object(id=1198137813800079480)])
+        await bot.add_cog(Check(bot),guilds = [discord.Object(id=settings.GUILD_ID)])
             

@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 
-logger = settings.logging.getLogger("bot")
 class Main:
 
     def __init__(self):
