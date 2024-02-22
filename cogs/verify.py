@@ -95,7 +95,7 @@ class Verify(commands.Cog):
                         await db.update_keys(email,interaction.user.id)
                         await interaction.followup.send("Successfully registered",ephemeral=True)
 
-                        self.prem_key =  await key.prem_key()
+                        self.prem_key =  await key.premium_key()
                         
                         if self.prem_key == False:
 
@@ -128,7 +128,7 @@ class Verify(commands.Cog):
                 
                 elif self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==0 and self.info["util"]=="premium":
 
-                    self.prem_key = await key.prem_key()
+                    self.prem_key = await key.premium_key()
 
                     if self.prem_key == False:
 
@@ -273,7 +273,7 @@ class Verify(commands.Cog):
                         await db.update_keys(email,interaction.user.id)
                         await interaction.followup.send("Successfully registered",ephemeral=True)
 
-                        self.prem_key =  await key.prem_key()
+                        self.prem_key =  await key.premium_key()
                         
                         if self.prem_key == False:
 
@@ -322,7 +322,7 @@ class Verify(commands.Cog):
 
                         await interaction.user.add_roles(self.premium_role)
                         await interaction.followup.send("Added premium role successfully")
-                        self.prem_key =  await key.prem_key()
+                        self.prem_key =  await key.premium_key()
                         
                         if self.prem_key == False:
 

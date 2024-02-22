@@ -33,7 +33,7 @@ class Keys(commands.Cog):
                  
                 if self.stan_role in member.roles:
 
-                    self.response = await key.stan_key()
+                    self.response = await key.standard_key()
 
                     if self.response == False:
                         
@@ -83,7 +83,7 @@ class Keys(commands.Cog):
                  
                 if self.prem_role in member.roles:
 
-                    self.response = await key.prem_key()
+                    self.response = await key.premium_key()
 
                     if self.response == False:
                         

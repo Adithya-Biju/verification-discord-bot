@@ -205,7 +205,7 @@ class database(commands.Cog):
         
     
     @app_commands.command(name = "delete_user", description= "Delete user info using their User ID")
-    async def delete_user(self,interaction:discord.Interaction,member:str):
+    async def delete_user(self,interaction:discord.Interaction,member:discord.Member):
 
         try:
             await interaction.response.defer(ephemeral=True)
@@ -214,7 +214,7 @@ class database(commands.Cog):
                 await interaction.followup.send("You don't have the adequate permissions to use this command",ephemeral=True)
             
             else:
-                self.info = await db.find_user(member)
+                self.info = await db.find_user(member.id)
 
                 if self.info == None:
                     

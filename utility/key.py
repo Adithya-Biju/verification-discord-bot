@@ -3,7 +3,7 @@ import settings
 
 try:
 
-    async def prem_key():
+    async def premium_key():
 
             async with aiohttp.ClientSession() as session:      
                 async with session.get(settings.PREMIUM_KEY) as t_url:
@@ -20,7 +20,7 @@ try:
                     else:
                          return False
     
-    async def stan_key():
+    async def standard_key():
          
          async with aiohttp.ClientSession() as session:      
                 async with session.get(settings.STANDARD_KEYS) as s_url:
