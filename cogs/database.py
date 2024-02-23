@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from utility import db,payment
 import settings
+import numpy
 
 class database(commands.Cog):
 
@@ -217,16 +218,17 @@ class database(commands.Cog):
         
     
     @app_commands.command(name = "delete_user", description= "Delete user info using their User ID")
-    async def delete_user(self,interaction:discord.Interaction,member:discord.Member):
+    async def delete_user(self,interaction:discord.Interaction,member:int):
 
         try:
             await interaction.response.defer(ephemeral=True)
+            self.member_id = int(numpy.int64(member))
 
             if interaction.permissions.administrator == False:
                 await interaction.followup.send("You don't have the adequate permissions to use this command",ephemeral=True)
             
             else:
-                self.info = await db.find_user(member.id)
+                self.info = await db.find_user(self.member_id)
 
                 if self.info == None:
                     
@@ -234,7 +236,7 @@ class database(commands.Cog):
                 
                 elif self.info != None:
                     
-                    await db.delete_user(member)
+                    await db.delete_user(self.member_id)
                     await interaction.followup.send(f'''Successfully deleted''',ephemeral=True)
                 
                 else:

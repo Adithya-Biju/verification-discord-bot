@@ -96,5 +96,8 @@ try:
     async def delete_email(email):
         await verification.delete_one({"email":email})
 
+    # async def delete_key(email):
+    #     await keys.delete_one({"user_id":email})
+
 except Exception as e:
     print(f"Error connecting to MongoDB: {e}")

@@ -559,7 +559,7 @@ class Verification(commands.Cog):
                     elif self.info["util"] == "both" and self.endpoint['util'] == "both":
                         await interaction.user.add_roles(self.standard_role)
                         await interaction.user.add_roles(self.premium_role)
-                        await interaction.followup.send("Successfully registered as both, Roles given successfully",ephemeral=True)               
+                        await interaction.followup.send("Successfully registered to both, Roles given successfully",ephemeral=True)               
 
                     elif self.info["util"] == "standard" and self.endpoint['util'] == "both":
                         await db.delete_email(email)
