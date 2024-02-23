@@ -10,14 +10,38 @@ try:
                     if response is False:
                         return False
                     else:
+                        payment = []
+
                         for i in response:
-                            payment = i['order_value'] 
+                            payment.append(i['order_value']) 
+                            p=0
+                            s=0
+
+                            for i in payment:
                             
-                            if payment == 25 or payment == 27.5:
-                                  return {"util":"premium"} 
+                                if payment == 25 or payment == 27.5:
+                                    p+=1
                             
-                            else:
-                                  return{"util":"standard"}
+                                else:
+                                    s+=1
+                        
+                        if p == 1 and s==0:
+                            return {"util":"premium"}
+
+                        elif p>=1 and s == 0:
+                            return{"util":"premium"}
+
+                        elif p>=1 and s == 0:
+                            return{"util":"standard"}
+
+                        elif s == 1 and p == 0:
+                            return{"util":"standard"}
+
+                        elif p >= 1 and s >= 1:
+                            return{"util":"both"}
+                            
+                        else:
+                            return"False"
                     
 
 except Exception as e:

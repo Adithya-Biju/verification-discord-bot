@@ -1,5 +1,4 @@
 import motor.motor_asyncio 
-import asyncio
 import settings
 
 try:
@@ -20,6 +19,13 @@ try:
             "email":email,
             "user_id":user,
             "util":"standard"
+            })
+    
+    async def struct_both(email,user):
+        await verification.insert_one({
+            "email":email,
+            "user_id":user,
+            "util":"both"
             })
     
     async def struct_keys(email,user):
