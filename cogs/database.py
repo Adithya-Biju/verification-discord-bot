@@ -22,7 +22,7 @@ class database(commands.Cog):
     @app_commands.choices(util = [
         discord.app_commands.Choice(name="premium",value=1),
         discord.app_commands.Choice(name="standard",value=2),
-        discord.app_commands.Choice(name="standard",value=3)
+        discord.app_commands.Choice(name="both",value=3)
     ])
     async def insert(self, interaction :discord.Interaction,email : str,member:discord.Member, util: discord.app_commands.Choice[int]):
         
