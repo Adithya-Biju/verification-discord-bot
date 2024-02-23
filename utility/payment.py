@@ -10,6 +10,7 @@ try:
                     if response is False:
                         return False
                     else:
+                       
                         payment = []
 
                         for i in response:
@@ -19,12 +20,12 @@ try:
 
                             for i in payment:
                             
-                                if payment == 25 or payment == 27.5:
+                                if i == 25 or i == 27.5:
                                     p+=1
                             
                                 else:
                                     s+=1
-                        
+                                    
                         if p == 1 and s==0:
                             return {"util":"premium"}
 

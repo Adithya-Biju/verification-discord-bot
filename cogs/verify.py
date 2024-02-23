@@ -47,9 +47,149 @@ class Verification(commands.Cog):
             self.endpoint = await payment.endpoint(email)
             self.user = await db.find_user(interaction.user.id)
 
+            ## CHECKING IF USER HAS BOTH STANDARD AND PREMIUM ROLE ##
+
+            if (self.premium_role in interaction.user.roles) and (self.standard_role in interaction.user.roles):
+
+                ## IF EMAIL DOESNT EXIST IN THE DATABASE, ITS USING THE ENDPOINTS TO CHECK ##
+
+                if self.info == None:
+
+                    ## IF USER NOT FOUND IN THE ENDPOINT ##
+                    
+                    if self.endpoint == False:
+                        
+                        if self.user != None:
+                            await interaction.followup.send(f"Registered to: {self.user['email']}")
+                        else:
+                            await interaction.user.remove_roles(self.premium_role)
+                            await interaction.user.remove_roles(self.standard_role)
+                            await interaction.followup.send("User not found, please / open to open a ticket",ephemeral=True)
+                    
+                    ## USER FOUND, NEW ENTRY IN THE DATABASE ##
+                    
+                    else:
+                        
+                        if self.endpoint["util"] == "premium":
+                            
+                            await db.struct_premium(email,interaction.user.id)
+                            await interaction.user.remove_roles(self.standard_role)
+                            await interaction.followup.send("Successfully registerd to premium role",ephemeral=True)
+
+                        elif self.endpoint["util"] == "standard":
+                                
+                                await db.struct_standard(email,interaction.user.id)
+                                await interaction.user.remove_roles(self.premium_role)
+                                await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
+                        
+                        elif self.endpoint["util"] == "both":
+                            
+                            await db.struct_both(email,interaction.user.id)                          
+                            await interaction.followup.send("Successfully registered to both premium and standard roles",ephemeral=True)
+                        
+                        else:
+
+                            await interaction.followup.send("Error registering from the endpoint",ephemeral=True)
+                
+                elif self.info != None and self.info['user_id']=="":
+
+                    if self.info["util"] == "premium":
+
+                        await db.update_verification(email,interaction.user.id)
+                        await db.update_keys(email,interaction.user.id)
+                        await interaction.user.remove_roles(self.standard_role)
+                        await interaction.followup.send("Successfully registered to premium role",ephemeral=True)
+
+                        self.prem_key =  await key.premium_key()
+                        
+                        if self.prem_key == False:
+
+                            await interaction.followup.send("Authy is down, please try again later",ephemeral=True)
+                        
+                        elif self.prem_key != False:
+
+                            try:
+                                self.channel = await interaction.user.create_dm()
+                                await self.channel.send(f'''Premium key : -
+{self.prem_key}''')
+                                await db.dm_key_successfull(email)
+                                await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                            except discord.errors.Forbidden:
+                                await interaction.followup.send("You're DMS are turned off, bot can't send you the keys",ephemeral=True)
+                    
+                        else:
+
+                            await interaction.followup.send("Error",ephemeral=True)
+                    
+                    elif self.info['util'] == "standard":
+                        
+                        await db.update_verification(email,interaction.user.id)
+                        await interaction.user.remove_roles(self.premium_role)
+                        await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
+                        
+
+                ## CHECKING IF THE USER RECIEVED A DM OR NOT ##
+                
+                elif self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==0 and self.info["util"]=="premium":
+                    
+                    await interaction.user.remove_roles(self.standard_role)
+                    self.prem_key = await key.premium_key()
+
+                    if self.prem_key == False:
+
+                        await interaction.followup.send("Authy is down, please try again later",ephemeral=True)
+                    
+                    elif self.prem_key != False:
+
+                        try:
+                            self.channel = await interaction.user.create_dm()
+                            await self.channel.send(f'''Premium key : -
+{self.prem_key}''')
+                            await db.dm_key_successfull(email)
+                            await interaction.followup.send("Key sent in DMS",ephemeral=True)
+
+                        except discord.errors.Forbidden:
+                            await interaction.followup.send("You're DMS are turned off, bot can't send you the keys",ephemeral=True)
+                
+                ## IF EVERYTHING IS SUFFICED FOR OLD MEMBER ##
+
+                elif (self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==1) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" ):
+                    
+                    await interaction.user.remove_roles(self.standard_role)
+                    await interaction.followup.send("Already registered as premium user, removed the standard role",ephemeral=True) 
+
+                ## IF EVERYTHING IS SUFFICED FOR NEW MEMBERS ##
+            
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium"):
+                    await interaction.user.remove_roles(self.standard_role)
+                    await interaction.followup.send("Already registered as premium, removing the standard role",ephemeral=True) 
+                
+                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
+                    await interaction.user.remove_roles(self.premium_role)
+                    await interaction.followup.send("Already registered as standard role, removed premium role and given standard role",ephemeral=True)
+                
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "both" and self.endpoint['util'] == 'both'):
+
+                    await interaction.followup.send("Already registered ",ephemeral=True)
+                
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "both"):
+                    await db.delete_email(email)
+                    await db.struct_both(email,interaction.user.id)
+                    await interaction.followup.send("Registered to both",ephemeral=True)
+                
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "both"):
+                    await db.delete_email(email)
+                    await db.struct_both(email,interaction.user.id)
+                    await interaction.followup.send("Registered to both",ephemeral=True)
+                
+                else:
+                    
+                    await interaction.followup.send("Error",ephemeral=True)
+                    
+
             ## CHECKING IF THE USER HAS THE PREMIUM ROLE ##
 
-            if self.premium_role in interaction.user.roles:
+            elif self.premium_role in interaction.user.roles:
 
                 ## IF EMAIL DOESNT EXIST IN THE DATABASE, ITS USING THE ENDPOINTS TO CHECK ##
 
@@ -72,14 +212,14 @@ class Verification(commands.Cog):
                         if self.endpoint["util"] == "premium":
                             
                             await db.struct_premium(email,interaction.user.id)
-                            await interaction.followup.send("Successfully registerd",ephemeral=True)
+                            await interaction.followup.send("Successfully registerd to premium role",ephemeral=True)
 
                         elif self.endpoint["util"] == "standard":
                                 
                                 await db.struct_standard(email,interaction.user.id)
                                 await interaction.user.remove_roles(self.premium_role)
                                 await interaction.user.add_roles(self.standard_role)
-                                await interaction.followup.send("Updated",ephemeral=True)
+                                await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
                         
                         elif self.endpoint["util"] == "both":
                             
@@ -87,20 +227,20 @@ class Verification(commands.Cog):
                             
                             if self.standard_role in interaction.user.roles:
 
-                                await interaction.user.add_roles(self.standard_role)
-                                await interaction.followup.send("Updated",ephemeral=True)
+                                await interaction.followup.send("Successfully registered to both premium and standard roles",ephemeral=True)
                             
                             elif self.standard_role not in interaction.user.roles:
 
-                                await interaction.followup.send("Successfully Updated",ephemeral=True)
+                                await interaction.user.add_roles(self.standard_role)
+                                await interaction.followup.send("Successfully registered to both premium and standaed role, added the standard role",ephemeral=True)
                             
                             else:
 
-                                await interaction.followup.send("Error",ephemeral=True)
+                                await interaction.followup.send("Error in registration to 'both' using endpoint ",ephemeral=True)
                         
                         else:
 
-                            await interaction.followup.send("Error",ephemeral=True)
+                            await interaction.followup.send("Error registering from the endpoint",ephemeral=True)
 
                         
                 ## IF EMAIL ID EXISTS IN THE DB BUT THE USER FILED IS EMPTY, WE UPDATE THE USER ID AND SEND A KEY ##
@@ -111,7 +251,7 @@ class Verification(commands.Cog):
 
                         await db.update_verification(email,interaction.user.id)
                         await db.update_keys(email,interaction.user.id)
-                        await interaction.followup.send("Successfully registered",ephemeral=True)
+                        await interaction.followup.send("Successfully registered to premium role",ephemeral=True)
 
                         self.prem_key =  await key.premium_key()
                         
@@ -139,7 +279,7 @@ class Verification(commands.Cog):
                         await db.update_verification(email,interaction.user.id)
                         await interaction.user.remove_roles(self.premium_role)
                         await interaction.user.add_roles(self.standard_role)
-                        await interaction.followup.send("Updated",ephemeral=True)
+                        await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
                         
 
                 ## CHECKING IF THE USER RECIEVED A DM OR NOT ##
@@ -172,30 +312,30 @@ class Verification(commands.Cog):
 
                 ## IF EVERYTHING IS SUFFICED FOR NEW MEMBERS ##
             
-                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium"):
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium"):
                     
                     await interaction.followup.send("Already registered",ephemeral=True) 
                 
-                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard":
+                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                     await interaction.user.remove_roles(self.premium_role)
                     await interaction.user.add_roles(self.standard_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Updated, removed premium role and given standard role",ephemeral=True)
                 
-                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "both"):
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "both" and self.endpoint['util'] == "both"):
                     await interaction.user.add_roles(self.standard_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Updated, added the standard role ",ephemeral=True)
                 
                 elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "both"):
                     await db.delete_email(email)
                     await db.struct_both(email,interaction.user.id)
                     await interaction.user.add_roles(self.standard_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Updated, registered to both and given the standard role",ephemeral=True)
                 
                 elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "both"):
                     await db.delete_email(email)
                     await db.struct_both(email,interaction.user.id)
                     await interaction.user.add_roles(self.standard_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Updated, registered to both given the standard role",ephemeral=True)
                 
                 else:
                     
@@ -203,7 +343,7 @@ class Verification(commands.Cog):
 
             ## CHECKING IF USER HAS STANDARD ##        
             
-            if self.standard_role in interaction.user.roles:
+            elif self.standard_role in interaction.user.roles:
 
                 ## IF EMAIL DOESNT EXIST IN THE DATABASE, ITS USING THE ENDPOINTS TO CHECK ##
 
@@ -227,14 +367,14 @@ class Verification(commands.Cog):
                         if self.endpoint["util"] == "standard":
                             
                             await db.struct_standard(email,interaction.user.id)
-                            await interaction.followup.send("Successfully registerd",ephemeral=True)
+                            await interaction.followup.send("Successfully registerd to standard role",ephemeral=True)
                         
                         elif self.endpoint["util"] == "premium":
                             
                             await db.struct_premium(email,interaction.user.id)
                             await interaction.user.remove_roles(self.standard_role)
                             await interaction.user.add_roles(self.premium_role)
-                            await interaction.followup.send("Updated",ephemeral=True)
+                            await interaction.followup.send("Registered as a premium role",ephemeral=True)
                         
                         elif self.endpoint["util"] == "both":
                             
@@ -242,55 +382,47 @@ class Verification(commands.Cog):
                             
                             if self.premium_role in interaction.user.roles:
 
-                                await interaction.user.add_roles(self.premium_role)
-                                await interaction.followup.send("Updated",ephemeral=True)
+                                await interaction.followup.send("Successfully registered to both",ephemeral=True)
                             
                             elif self.premium_role not in interaction.user.roles:
-
-                                await interaction.followup.send("Successfully Updated",ephemeral=True)
+                                
+                                await interaction.user.add_roles(self.premium_role)
+                                await interaction.followup.send("Successfully registered to both and given the premium role",ephemeral=True)
                             
                             else:
 
-                                await interaction.followup.send("Error",ephemeral=True)
+                                await interaction.followup.send("Error in registering to both",ephemeral=True)
                         
                         else:
                             await interaction.followup.send("Error",ephemeral=True)
-                    
-                ## IF EMAIL ID EXISTS IN THE DB BUT THE USER FILED IS EMPTY, WE UPDATE THE USER ID AND SEND A KEY ##
-                    
-                elif self.info != None and self.info['user_id']=="" and self.info["util"]=="standard":
-
-                    await db.update_verification(email,interaction.user.id)
-                    await db.update_keys(email,interaction.user.id)
-                    await interaction.followup.send("Successfully registered",ephemeral=True)
                 
                 ## IF EVERYTHING IS SUFFICED ##
 
-                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard":
+                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                     
                     await interaction.followup.send("Already registered",ephemeral=True) 
                 
                 
-                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "premium":
+                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium":
                     await interaction.user.remove_roles(self.standard_role)
                     await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Registered to premium role",ephemeral=True)
                 
-                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "both"):
+                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "both" and self.endpoint['util'] == "both"):
                     await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Registered to both, added premium role",ephemeral=True)
                 
                 elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "both"):
                     await db.delete_email(email)
                     await db.struct_both(email,interaction.user.id)
                     await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Registered to both and given the premium role",ephemeral=True)
                 
                 elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "both"):
                     await db.delete_email(email)
                     await db.struct_both(email,interaction.user.id)
                     await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
+                    await interaction.followup.send("Registered to both and given the premium role",ephemeral=True)
                 
                 
                 else:
@@ -298,7 +430,7 @@ class Verification(commands.Cog):
 
             ## IF THE USER HAS NO ROLES ##
             
-            if (self.standard_role not in interaction.user.roles) and (self.premium_role not in interaction.user.roles):
+            elif (self.standard_role not in interaction.user.roles) and (self.premium_role not in interaction.user.roles):
 
                 ## CHECKING IF THE USER IS IN THE DATABASE ##
                 
@@ -318,20 +450,20 @@ class Verification(commands.Cog):
                             
                             await db.struct_standard(email,interaction.user.id)
                             await interaction.user.add_roles(self.standard_role)
-                            await interaction.followup.send("Standard role given",ephemeral=True)
+                            await interaction.followup.send("Successfully registered,standard role given",ephemeral=True)
 
                         elif self.endpoint["util"] == "premium":
 
                             await db.struct_premium(email,interaction.user.id)
                             await interaction.user.add_roles(self.premium_role)
-                            await interaction.followup.send("Premium role given",ephemeral=True)
+                            await interaction.followup.send("Successfully registered, premium role given",ephemeral=True)
                         
                         elif self.endpoint["util"] == "both":
                             
                             await db.struct_both(email,interaction.user.id)
                             await interaction.user.add_roles(self.premium_role)
                             await interaction.user.add_roles(self.standard_role)
-                            await interaction.followup.send("Registered successfully",ephemeral=True)
+                            await interaction.followup.send("Registered successfully to both",ephemeral=True)
                         
                         else:
 
@@ -346,7 +478,7 @@ class Verification(commands.Cog):
                         await interaction.user.add_roles(self.premium_role)
                         await db.update_verification(email,interaction.user.id)
                         await db.update_keys(email,interaction.user.id)
-                        await interaction.followup.send("Successfully registered",ephemeral=True)
+                        await interaction.followup.send("Successfully registered to premium",ephemeral=True)
 
                         self.prem_key =  await key.premium_key()
                         
@@ -373,7 +505,7 @@ class Verification(commands.Cog):
                         
                         await interaction.user.add_roles(self.standard_role)
                         await db.update_verification(email,interaction.user.id)
-                        await interaction.followup.send("Successfully registered",ephemeral=True)
+                        await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
                 
                 ## IF EVERYTHING IS SUFFICED FOR OLD CUSTOMER ##
 
@@ -381,12 +513,7 @@ class Verification(commands.Cog):
 
                     if self.info["util"] == "premium":
                         await interaction.user.add_roles(self.premium_role)
-                        await interaction.followup.send("Registered, Role given successfully",ephemeral=True)
-
-
-                    elif self.info["util"] == "standard":
-                        await interaction.user.add_roles(self.standard_role)
-                        await interaction.followup.send("Registered, Role given successfully",ephemeral=True)
+                        await interaction.followup.send("Registered as premium, Role given successfully",ephemeral=True)
 
                     else:
                         await interaction.followup.send("Error",ephemeral=True)
@@ -396,7 +523,7 @@ class Verification(commands.Cog):
                 elif (self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==0) and (self.info != None and  self.info['user_id'] == interaction.user.id):
 
                         await interaction.user.add_roles(self.premium_role)
-                        await interaction.followup.send("Added premium role successfully",ephemeral=True)
+                        await interaction.followup.send("Successfully registered, added premium role successfully",ephemeral=True)
                         self.prem_key =  await key.premium_key()
                         
                         if self.prem_key == False:
@@ -421,39 +548,37 @@ class Verification(commands.Cog):
                 
                 elif (self.dm == None) and (self.info != None and  self.info['user_id'] == interaction.user.id ):
                     
-                    if self.info["util"] == "premium":
+                    if self.info["util"] == "premium" and self.endpoint['util'] == "premium":
                         await interaction.user.add_roles(self.premium_role)
-                        await interaction.followup.send("Registered, Role given successfully",ephemeral=True)
+                        await interaction.followup.send("Successfully registered as premium, Role given successfully",ephemeral=True)
 
-                    elif self.info["util"] == "standard":
+                    elif self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                         await interaction.user.add_roles(self.standard_role)
-                        await interaction.followup.send("Registered, Role given successfully",ephemeral=True)
+                        await interaction.followup.send("Successfully registered as standard, Role given successfully",ephemeral=True)
                     
-                    elif self.info["util"] == "both":
+                    elif self.info["util"] == "both" and self.endpoint['util'] == "both":
                         await interaction.user.add_roles(self.standard_role)
                         await interaction.user.add_roles(self.premium_role)
-                        await interaction.followup.send("Registered, Roles given successfully",ephemeral=True)               
+                        await interaction.followup.send("Successfully registered as both, Roles given successfully",ephemeral=True)               
 
+                    elif self.info["util"] == "standard" and self.endpoint['util'] == "both":
+                        await db.delete_email(email)
+                        await db.struct_both(email,interaction.user.id)
+                        await interaction.user.add_roles(self.standard_role)
+                        await interaction.user.add_roles(self.premium_role)
+                        await interaction.followup.send("Registered, added both premium and standard role",ephemeral=True)
+                    
+                    elif self.info["util"] == "premium" and self.endpoint['util'] == "both":
+                        await db.delete_email(email)
+                        await db.struct_both(email,interaction.user.id)
+                        await interaction.user.add_roles(self.standard_role)
+                        await interaction.user.add_roles(self.premium_role)
+                        await interaction.followup.send("Registered, added both premium and standard role",ephemeral=True)
+                    
                     else:
                         await interaction.followup.send("Error",ephemeral=True)
-                
-                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "both"):
-                    await db.delete_email(email)
-                    await db.struct_both(email,interaction.user.id)
-                    await interaction.user.add_roles(self.standard_role)
-                    await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
-                
-                elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "both"):
-                    await db.delete_email(email)
-                    await db.struct_both(email,interaction.user.id)
-                    await interaction.user.add_roles(self.standard_role)
-                    await interaction.user.add_roles(self.premium_role)
-                    await interaction.followup.send("Updated",ephemeral=True)
-                
-                else:
-                    
-                    await interaction.followup.send("Error",ephemeral=True)
+            else:
+                await interaction.followup.send("Error",ephemeral=True)
 
         except Exception as e:
             print(f"Unexpected Error: {e}")

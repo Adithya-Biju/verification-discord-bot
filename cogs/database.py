@@ -20,9 +20,15 @@ class database(commands.Cog):
     @app_commands.describe(util = "Choose the utility:-")
     @app_commands.choices(util = [
         discord.app_commands.Choice(name="premium",value=1),
-        discord.app_commands.Choice(name="standard",value=2)
+        discord.app_commands.Choice(name="standard",value=2),
+        discord.app_commands.Choice(name="standard",value=3)
     ])
     async def insert(self, interaction :discord.Interaction,email : str,member:discord.Member, util: discord.app_commands.Choice[int]):
+        
+        self.premium_role = 1198162651520438272
+        self.standard_role = 1208844730486493265
+        self.premium_role = interaction.guild.get_role(self.premium_role)
+        self.standard_role = interaction.guild.get_role(self.standard_role)
 
         try:
 
@@ -44,16 +50,22 @@ class database(commands.Cog):
                     if util.value == 1:
                         
                         await db.struct_premium(email,member.id)
-                        await db.struct_keys(email,member.id)
-                        self.response = await db.find_email_main(email)
-                        await interaction.followup.send(f'''Successfully registered, RUN /CHECK COMMAND TO GIVE THEM ROLES AND SEND A KEY ''',ephemeral=True)
+                        await member.add_roles(self.premium_role)
+                        await interaction.followup.send(f'''Successfully registered and given the roles''',ephemeral=True)
                     
 
                     elif util.value == 2:
 
                         await db.struct_standard(email,member.id)
-                        self.response = await db.find_email_main(email)
-                        await interaction.followup.send(f'''Successfully registered, RUN /CHECK COMMAND TO GIVE THEM ROLE ACCORDINGLY''',ephemeral=True)
+                        await member.add_roles(self.standard_role)
+                        await interaction.followup.send(f'''Successfully registered and given the roles''',ephemeral=True)
+                    
+                    elif util.value == 3:
+
+                        await db.struct_both(email,member.id)
+                        await member.add_roles(self.premium_role)
+                        await member.add_roles(self.standard_role)
+                        await interaction.followup.send(f'''Successfully registered and given the roles ''',ephemeral=True)
                     
                     else:
                         await interaction.followup.send("Error",ephemeral=True)

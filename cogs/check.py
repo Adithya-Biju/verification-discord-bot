@@ -15,15 +15,6 @@ class Check(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
          print("Check cog loaded")
-        
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def sync(self, ctx) -> None:
-            try:
-                fmt = await self.bot.tree.sync(guild=ctx.guild)
-                await ctx.send(f"Synced {len(fmt)} commands.")
-            except Exception as e:
-                print(e)
 
     ## CHECK COMMAND USING A MAIL ID INPUT ##
 
