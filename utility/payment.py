@@ -32,7 +32,7 @@ try:
                         elif p>=1 and s == 0:
                             return{"util":"premium"}
 
-                        elif p>=1 and s == 0:
+                        elif p==0 and s >= 0:
                             return{"util":"standard"}
 
                         elif s == 1 and p == 0:
