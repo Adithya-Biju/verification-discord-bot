@@ -19,7 +19,7 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'standard_key',description='Sends the key to standard in DMS')
     async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
 
-        self.stan_role = 1208844730486493265
+        self.stan_role = 1196567231786664017
         self.stan_role = interaction.guild.get_role(self.stan_role)
 
         try:
@@ -69,7 +69,7 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
     async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
 
-        self.prem_role = 1198162651520438272
+        self.prem_role = 1196567144847118346
         self.prem_role = interaction.guild.get_role(self.prem_role)
 
         try:

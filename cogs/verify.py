@@ -31,8 +31,8 @@ class Verification(commands.Cog):
     @app_commands.command(name="verify",description="Verify to get the premium role")
     async def verify(self, interaction :discord.Interaction,email : str):
 
-        self.premium_role = 1198162651520438272
-        self.standard_role = 1208844730486493265
+        self.premium_role = 1196567144847118346
+        self.standard_role = 1196567231786664017
         self.premium_role = interaction.guild.get_role(self.premium_role)
         self.standard_role = interaction.guild.get_role(self.standard_role)
         
