@@ -1,7 +1,7 @@
 import discord 
 from discord.ext import commands
 from discord import app_commands
-from utility import db,key,payment,constants,embed
+from utility import db,key,payment,embed
 import settings
 import asyncio
 
@@ -31,20 +31,20 @@ class Verification(commands.Cog):
     @app_commands.command(name="verify",description="Verify to get the premium role")
     async def verify(self, interaction :discord.Interaction,email : str):
 
-            self.logging = interaction.guild.get_channel(1202584731896651876)
-            self.premium_role = 1196567144847118346
-            self.standard_role = 1196567231786664017
-            self.standard_download = interaction.guild.get_channel(1196576005758926978)
-            self.standard_rev = interaction.guild.get_channel(1196575312650174594)
-            self.premium_download = interaction.guild.get_channel(1196576005758926978)
-            self.premium_rev = interaction.guild.get_channel(1196574152367284264)
-            self.embed_old =  embed.old_prem_embed(self.premium_download,self.premium_rev)
-            self.embed_new =  embed.new_prem_embed(self.premium_download,self.premium_rev)
-            self.embed_stan =  embed.stan_embed(self.standard_download,self.standard_rev)
-            self.dms_failed =   embed.dms_failed()
-            self.email_not_found = embed.email_not_found()
+        self.logging = interaction.guild.get_channel(1202584731896651876)
+        self.premium_role = interaction.guild.get_role(1196567144847118346)
+        self.standard_role = interaction.guild.get_role(1196567231786664017)
+        self.standard_download = 1196576005758926978
+        self.standard_rev = 1196575312650174594
+        self.premium_download = 1196576005758926978
+        self.premium_rev = 1196574152367284264
+        self.embed_old =  await embed.old_prem_embed(self.premium_download,self.premium_rev)
+        self.embed_new =  await embed.new_prem_embed(self.premium_download,self.premium_rev)
+        self.embed_stan =  await embed.stan_embed(self.standard_download,self.standard_rev)
+        self.dms_failed =   await embed.dms_failed()
+        self.email_not_found = await embed.email_not_found()
         
-        # try:
+        try:
 
             await interaction.response.defer(ephemeral=True)  
 
@@ -71,7 +71,7 @@ class Verification(commands.Cog):
                         else:
                             await interaction.user.remove_roles(self.premium_role)
                             await interaction.user.remove_roles(self.standard_role)
-                            await interaction.followup.send(embed = await self.email_not_found,ephemeral=True)
+                            await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                     
                     ## USER FOUND, NEW ENTRY IN THE DATABASE ##
                     
@@ -132,7 +132,7 @@ class Verification(commands.Cog):
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{interaction.user.mention} recieved the premium key")
                             except discord.errors.Forbidden:
-                                await interaction.followup.send(embed = await self.dms_failed,ephemeral=True)
+                                await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
                         else:
 
@@ -168,7 +168,7 @@ class Verification(commands.Cog):
                             await self.logging.send(f"{interaction.user.mention} recieved the Premium key")
 
                         except discord.errors.Forbidden:
-                            await interaction.followup.send(embed = await self.dms_failed,ephemeral=True)
+                            await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                 
                 ## IF EVERYTHING IS SUFFICED FOR OLD MEMBER ##
 
@@ -212,7 +212,7 @@ class Verification(commands.Cog):
             ## CHECKING IF THE USER HAS THE PREMIUM ROLE ##
 
             elif (self.premium_role in interaction.user.roles) and (self.standard_role not in interaction.user.roles):
-                print("here")
+    
                 ## IF EMAIL DOESNT EXIST IN THE DATABASE, ITS USING THE ENDPOINTS TO CHECK ##
 
                 if self.info == None:
@@ -225,7 +225,7 @@ class Verification(commands.Cog):
                             await interaction.followup.send(f"Registered to: {self.user['email']}")
                         else:
                             await interaction.user.remove_roles(self.premium_role)
-                            await interaction.followup.send(embed = await self.email_not_found,ephemeral=True)
+                            await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                     
                     ## USER FOUND, NEW ENTRY IN THE DATABASE ##
                     
@@ -270,9 +270,7 @@ class Verification(commands.Cog):
                         await db.update_keys(email,interaction.user.id)
                         await asyncio.sleep(3)
                         await self.logging.send(f"{interaction.user.mention} is registered to {email} as Old Premium customer")
-                        print(1)
                         self.prem_key =  await key.premium_key()
-                        print(2)
                         if self.prem_key == False:
 
                             await interaction.followup.send("Authy is down, please try again later",ephemeral=True)
@@ -280,7 +278,7 @@ class Verification(commands.Cog):
                         elif self.prem_key != False:
 
                             try:
-                                print(3)
+
                                 self.channel = await interaction.user.create_dm()
                                 await self.channel.send(self.prem_key)
                                 await db.dm_key_successfull(email)
@@ -288,7 +286,7 @@ class Verification(commands.Cog):
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{interaction.user.mention} recieved the premium key")
                             except discord.errors.Forbidden:
-                                await interaction.followup.send(embed = await self.dms_failed,ephemeral=True)
+                                await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
                         else:
 
@@ -325,7 +323,7 @@ class Verification(commands.Cog):
                             await self.logging.send(f"{interaction.user.mention} recieved the premium key")
 
                         except discord.errors.Forbidden:
-                            await interaction.followup.send("You're DMS are turned off, bot can't send you the keys",ephemeral=True)
+                            await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
                 
                 ## IF EVERYTHING IS SUFFICED FOR OLD MEMBER ##
 
@@ -338,6 +336,11 @@ class Verification(commands.Cog):
                 elif (self.dm == None) and (self.info != None and  self.info['user_id']==interaction.user.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium"):
                     
                     await interaction.followup.send("Already registered",ephemeral=True) 
+                
+                elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard":
+                    await interaction.user.remove_roles(self.premium_role)
+                    await interaction.user.add_roles(self.standard_role)
+                    await interaction.followup.send("Updated, removed premium role and given standard role",ephemeral=True)
                 
                 elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                     await interaction.user.remove_roles(self.premium_role)
@@ -382,7 +385,7 @@ class Verification(commands.Cog):
                         if self.user != None:
                             await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                         else:
-                            await interaction.followup.send(embed = await self.email_not_found,ephemeral=True)
+                            await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                             await interaction.user.remove_roles(self.standard_role)
                     
                     
@@ -419,6 +422,9 @@ class Verification(commands.Cog):
                 
                 ## IF EVERYTHING IS SUFFICED ##
 
+                elif  self.info != None and  self.info['user_id']== interaction.user.id :
+                        await interaction.followup.send("Already registered",ephemeral=True) 
+
                 elif  self.info != None and  self.info['user_id']== interaction.user.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                     
                     await interaction.followup.send("Already registered",ephemeral=True) 
@@ -449,7 +455,7 @@ class Verification(commands.Cog):
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{interaction.user.mention} recieved the premium key")
                             except discord.errors.Forbidden:
-                                await interaction.followup.send(embed = await self.dms_failed,ephemeral=True)
+                                await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
                         else:
 
@@ -485,7 +491,7 @@ class Verification(commands.Cog):
                             await self.logging.send(f"{interaction.user.mention} recieved the premium key")
 
                         except discord.errors.Forbidden:
-                            await interaction.followup.send(embed = await self.dms_failed,ephemeral=True)
+                            await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                 
                 elif self.dm != None and self.dm["user_id"] == interaction.user.id and self.dm['dm']==1 and self.info["util"]=="premium":
                      await interaction.user.remove_roles(self.standard_role)
@@ -513,7 +519,7 @@ class Verification(commands.Cog):
                     await interaction.user.add_roles(self.premium_role)
                     await interaction.followup.send("Registered to both and given the premium role",ephemeral=True)
                 
-                elif self.info["user_id"] == interaction.user.id:
+                elif self.info["user_id"] != interaction.user.id:
                     await interaction.followup.send(f"Email is already assigned to <@{self.info['user_id']}>")
                 
                 else:
@@ -531,7 +537,7 @@ class Verification(commands.Cog):
                     
                     if self.endpoint == False:
                         
-                        await interaction.followup.send(embed=await self.email_not_found,ephemeral=True)
+                        await interaction.followup.send(embed=self.email_not_found,ephemeral=True)
 
                     ## USER FOUND, NEW ENTRY IN THE DATABASE ##
                     
@@ -594,7 +600,7 @@ class Verification(commands.Cog):
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{interaction.user.mention} recieved the Premium key")
                             except discord.errors.Forbidden:
-                                await interaction.followup.send(embed=await self.dms_failed(),ephemeral=True)
+                                await interaction.followup.send(embed=self.dms_failed(),ephemeral=True)
                         
                         else:
 
@@ -637,7 +643,7 @@ class Verification(commands.Cog):
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed=self.embed_old,ephemeral=True)
                             except discord.errors.Forbidden:
-                                await interaction.followup.send(embed=await self.dms_failed,ephemeral=True)
+                                await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
                         
                         else:
 
@@ -684,9 +690,9 @@ class Verification(commands.Cog):
             else:
                 await interaction.followup.send("Error",ephemeral=True)
 
-        # except Exception as e:
-        #     print(f"Unexpected Error: {e}")
-        #     await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
+        except Exception as e:
+            print(f"Unexpected Error: {e}")
+            await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
 
 async def setup(bot):
         await bot.add_cog(Verification(bot),guilds = [discord.Object(id=settings.GUILD_ID)])
