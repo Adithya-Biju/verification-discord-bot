@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from utility import db,key,payment
+import asyncio
 import settings
 
 
@@ -27,6 +28,7 @@ class Check(commands.Cog):
 
                     self.premium_role = 1196567144847118346
                     self.standard_role = 1196567231786664017
+                    self.log = interaction.guild.get_channel(settings.LOGGING_ID)
                     self.premium_role = interaction.guild.get_role(self.premium_role)
                     self.standard_role = interaction.guild.get_role(self.standard_role)
 
@@ -67,17 +69,23 @@ class Check(commands.Cog):
                                     await db.struct_premium(email,member.id)
                                     await member.remove_roles(self.standard_role)
                                     await interaction.followup.send("Successfully registerd to premium role",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium customer")
 
                                 elif self.endpoint["util"] == "standard":
                                         
                                         await db.struct_standard(email,member.id)
                                         await member.remove_roles(self.premium_role)
                                         await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} is registered to {email} as Standard customer")
                                 
                                 elif self.endpoint["util"] == "both":
                                     
                                     await db.struct_both(email,member.id)                          
                                     await interaction.followup.send("Successfully registered to both premium and standard roles",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium and Standard customer")
                                 
                                 else:
 
@@ -91,6 +99,8 @@ class Check(commands.Cog):
                                 await db.update_keys(email,member.id)
                                 await member.remove_roles(self.standard_role)
                                 await interaction.followup.send("Successfully registered to premium role",ephemeral=True)
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Premium customer")
 
                                 self.prem_key =  await key.premium_key()
                                 
@@ -103,9 +113,12 @@ class Check(commands.Cog):
                                     try:
                                         self.channel = await member.create_dm()
                                         await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+        
+{self.prem_key}''')
                                         await db.dm_key_successfull(email)
                                         await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} recieved the Premium key")
                                     except discord.errors.Forbidden:
                                         await interaction.followup.send("DMS are turned off, bot can't send the keys",ephemeral=True)
                             
@@ -118,7 +131,8 @@ class Check(commands.Cog):
                                 await db.update_verification(email,member.id)
                                 await member.remove_roles(self.premium_role)
                                 await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
-                                
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Standard customer")        
 
                         ## CHECKING IF THE USER RECIEVED A DM OR NOT ##
                         
@@ -136,10 +150,12 @@ class Check(commands.Cog):
                                 try:
                                     self.channel = await member.create_dm()
                                     await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+        
+{self.prem_key}''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send("Key sent in DMS",ephemeral=True)
-
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} recieved the Premium key")
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send("DMS are turned off, bot can't send the keys",ephemeral=True)
                         
@@ -205,6 +221,8 @@ class Check(commands.Cog):
                                     
                                     await db.struct_premium(email,member.id)
                                     await interaction.followup.send("Successfully registerd to premium role",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium customer")
 
                                 elif self.endpoint["util"] == "standard":
                                         
@@ -212,10 +230,14 @@ class Check(commands.Cog):
                                         await member.remove_roles(self.premium_role)
                                         await member.add_roles(self.standard_role)
                                         await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} is registered to {email} as Standard customer")
                                 
                                 elif self.endpoint["util"] == "both":
                                     
                                     await db.struct_both(email,member.id)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium and Standard customer")
                                     
                                     if self.standard_role in member.roles:
 
@@ -244,6 +266,8 @@ class Check(commands.Cog):
                                 await db.update_verification(email,member.id)
                                 await db.update_keys(email,member.id)
                                 await interaction.followup.send("Successfully registered to premium role",ephemeral=True)
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Premium customer")
 
                                 self.prem_key =  await key.premium_key()
                                 
@@ -256,9 +280,12 @@ class Check(commands.Cog):
                                     try:
                                         self.channel = await member.create_dm()
                                         await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+        
+{self.prem_key}''')
                                         await db.dm_key_successfull(email)
                                         await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} recieved the Premium key")
                                     except discord.errors.Forbidden:
                                         await interaction.followup.send("DMS are turned off, bot can't send the key",ephemeral=True)
                             
@@ -272,7 +299,8 @@ class Check(commands.Cog):
                                 await member.remove_roles(self.premium_role)
                                 await member.add_roles(self.standard_role)
                                 await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
-                                
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Standard customer")
 
                         ## CHECKING IF THE USER RECIEVED A DM OR NOT ##
                         
@@ -289,9 +317,12 @@ class Check(commands.Cog):
                                 try:
                                     self.channel = await member.create_dm()
                                     await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+        
+{self.prem_key}''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} recieved Premium key")
 
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send("DMS are turned off, bot can't send the keys",ephemeral=True)
@@ -360,6 +391,8 @@ class Check(commands.Cog):
                                     
                                     await db.struct_standard(email,member.id)
                                     await interaction.followup.send("Successfully registerd to standard role",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium customer")
                                 
                                 elif self.endpoint["util"] == "premium":
                                     
@@ -367,10 +400,14 @@ class Check(commands.Cog):
                                     await member.remove_roles(self.standard_role)
                                     await member.add_roles(self.premium_role)
                                     await interaction.followup.send("Registered as a premium role",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Standard customer")
                                 
                                 elif self.endpoint["util"] == "both":
                                     
                                     await db.struct_both(email,member.id)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium and Standard customer")
                                     
                                     if self.premium_role in member.roles:
 
@@ -443,12 +480,16 @@ class Check(commands.Cog):
                                     await db.struct_standard(email,member.id)
                                     await member.add_roles(self.standard_role)
                                     await interaction.followup.send("Successfully registered,standard role given",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Standard customer")
 
                                 elif self.endpoint["util"] == "premium":
 
                                     await db.struct_premium(email,member.id)
                                     await member.add_roles(self.premium_role)
                                     await interaction.followup.send("Successfully registered, premium role given",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium customer")
                                 
                                 elif self.endpoint["util"] == "both":
                                     
@@ -456,6 +497,8 @@ class Check(commands.Cog):
                                     await member.add_roles(self.premium_role)
                                     await member.add_roles(self.standard_role)
                                     await interaction.followup.send("Registered successfully to both",ephemeral=True)
+                                    await asyncio.sleep(3)
+                                    await self.log.send(f"{interaction.user.mention} is registered to {email} as Premium and Standard customer")
                                 
                                 else:
 
@@ -471,6 +514,8 @@ class Check(commands.Cog):
                                 await db.update_verification(email,member.id)
                                 await db.update_keys(email,member.id)
                                 await interaction.followup.send("Successfully registered to premium",ephemeral=True)
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Premium customer")
 
                                 self.prem_key =  await key.premium_key()
                                 
@@ -483,9 +528,12 @@ class Check(commands.Cog):
                                     try:
                                         self.channel = await member.create_dm()
                                         await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+
+{self.prem_key}''')
                                         await db.dm_key_successfull(email)
                                         await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} recieved a Premium key")
                                     except discord.errors.Forbidden:
                                         await interaction.followup.send("DMS are turned off, bot can't send the keys",ephemeral=True)
                                 
@@ -498,6 +546,8 @@ class Check(commands.Cog):
                                 await member.add_roles(self.standard_role)
                                 await db.update_verification(email,member.id)
                                 await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
+                                await asyncio.sleep(3)
+                                await self.log.send(f"{interaction.user.mention} is registered to {email} as Old Standard customer")
                         
                         ## IF EVERYTHING IS SUFFICED FOR OLD CUSTOMER ##
 
@@ -527,9 +577,12 @@ class Check(commands.Cog):
                                     try:
                                         self.channel = await member.create_dm()
                                         await self.channel.send(f'''Premium key : -
-        {self.prem_key}''')
+
+{self.prem_key}''')
                                         await db.dm_key_successfull(email)
                                         await interaction.followup.send("Key sent in DMS",ephemeral=True)
+                                        await asyncio.sleep(3)
+                                        await self.log.send(f"{interaction.user.mention} recieved a Premium key")
                                     except discord.errors.Forbidden:
                                         await interaction.followup.send("DMS are turned off, bot can't send the keys",ephemeral=True)
                                 

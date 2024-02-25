@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import settings
+import asyncio
 from utility import key
 
 
@@ -20,6 +21,7 @@ class Keys(commands.Cog):
     async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
 
         self.stan_role = 1196567231786664017
+        self.log = interaction.guild.get_channel(settings.LOGGING_ID)
         self.stan_role = interaction.guild.get_role(self.stan_role)
 
         try:
@@ -44,13 +46,13 @@ class Keys(commands.Cog):
                         try:
                         
                             self.channel = await member.create_dm()
-                            await self.channel.send(f'''***Key for standard tweaks :-***
-                                                                            
-{self.response}''')
+                            await self.channel.send(self.response)
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
+                            await asyncio.sleep(3)
+                            await self.log.send(f"{interaction.user.mention} recieved Standard key")
 
                         except discord.errors.Forbidden as e:
-                            await interaction.followup.send("You're DMS are closed",ephemeral=True)
+                            await interaction.followup.send("DMS are closed",ephemeral=True)
 
                     else:
                         
@@ -94,13 +96,13 @@ class Keys(commands.Cog):
                         try:
                             
                             self.channel = await member.create_dm()
-                            await self.channel.send(f'''***Key for premium tweaks :-***
-                                                                            
-{self.response}''')
+                            await self.channel.send(self.response)
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
+                            await asyncio.sleep(3)
+                            await self.log.send(f"{interaction.user.mention} recieved a Premium key")
 
                         except discord.errors.Forbidden as e:
-                            await interaction.followup.send("You're DMS are closed",ephemeral=True)
+                            await interaction.followup.send("DMS are closed",ephemeral=True)
 
                     else:
                         

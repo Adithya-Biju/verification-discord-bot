@@ -12,7 +12,12 @@ try:
                         t_key = await t_url.text()
 
                         if len(t_key) == 42 and t_key.startswith('PREMIUM'):                           
-                            return t_key
+                            return f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{t_key}
+
+note: you can only use this on one pc (HWID) 
+'''
                         
                         else:                           
                             return False
@@ -29,7 +34,12 @@ try:
                         s_key = await s_url.text()
 
                         if len(s_key) == 43 and s_key.startswith('STANDARD'):
-                             return s_key
+                             return f'''**Hello, here is your LICENSE KEY for EXM STANDARD TWEAKS:**
+
+{s_key}
+
+note: you can only use this on one pc (HWID) 
+'''
                         
                         else:
                              return False
