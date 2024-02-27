@@ -1,5 +1,6 @@
 import settings
 import aiohttp
+import stripe
 
 try:
    
@@ -43,6 +44,9 @@ try:
                             
                         else:
                             return"False"
+        
+    # async def Stripe(email):
+
                     
 
 except Exception as e:

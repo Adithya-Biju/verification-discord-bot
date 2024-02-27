@@ -63,8 +63,8 @@ class Check(commands.Cog):
                             if self.user != None:
                                 await interaction.followup.send(f"Registered to: {self.user['email']}")
                             else:
-                                await member.remove_roles(self.premium_role)
-                                await member.remove_roles(self.standard_role)
+                                #await member.remove_roles(self.premium_role)
+                                #await member.remove_roles(self.standard_role)
                                 await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                         
                         ## USER FOUND, NEW ENTRY IN THE DATABASE ##
@@ -74,7 +74,7 @@ class Check(commands.Cog):
                             if self.endpoint["util"] == "premium":
                                 
                                 await db.struct_premium(email,member.id)
-                                await member.remove_roles(self.standard_role)
+                                #await member.remove_roles(self.standard_role)
                                 await interaction.followup.send(embed = self.embed_new,ephemeral=True)
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{member.mention} is registered to {email} as Premium customer")
@@ -83,7 +83,7 @@ class Check(commands.Cog):
                             elif self.endpoint["util"] == "standard":
                                     
                                     await db.struct_standard(email,member.id)
-                                    await member.remove_roles(self.premium_role)
+                                    #await member.remove_roles(self.premium_role)
                                     await interaction.followup.send(embed = self.embed_stan,ephemeral=True)
                                     await asyncio.sleep(3)
                                     await self.logging.send(f"{member.mention} is registered to {email} as Standard customer")
@@ -105,7 +105,7 @@ class Check(commands.Cog):
 
                             await db.update_verification(email,member.id)
                             await db.update_keys(email,member.id)
-                            await member.remove_roles(self.standard_role)
+                            #await member.remove_roles(self.standard_role)
                             await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                             await asyncio.sleep(3)
                             await self.logging.send(f"{member.mention} is registered to {email} as Old premium customer")
@@ -135,7 +135,7 @@ class Check(commands.Cog):
                         elif self.info['util'] == "standard":
                             
                             await db.update_verification(email,member.id)
-                            await member.remove_roles(self.premium_role)
+                            #await member.remove_roles(self.premium_role)
                             await interaction.followup.send(embed = self.embed_stan,ephemeral=True)
                             await asyncio.sleep(3)
                             await self.logging.send(f"{member.mention} is registered to {email} as Old standard customer")                      
@@ -144,7 +144,7 @@ class Check(commands.Cog):
                     
                     elif self.dm != None and self.dm["user_id"] == member.id and self.dm['dm']==0 and self.info["util"]=="premium":
                         
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         self.prem_key = await key.premium_key()
 
                         if self.prem_key == False:
@@ -168,17 +168,17 @@ class Check(commands.Cog):
 
                     elif (self.dm != None and self.dm["user_id"] == member.id and self.dm['dm']==1) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "premium" ):
                         
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         await interaction.followup.send("Already registered as premium user, removed the standard role",ephemeral=True) 
 
                     ## IF EVERYTHING IS SUFFICED FOR NEW MEMBERS ##
                 
                     elif (self.dm == None) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium"):
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         await interaction.followup.send("Already registered as premium, removing the standard role",ephemeral=True) 
                     
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
-                        await member.remove_roles(self.premium_role)
+                        #await member.remove_roles(self.premium_role)
                         await interaction.followup.send("Already registered as standard role, removed premium role and given standard role",ephemeral=True)
                     
                     elif (self.dm == None) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "both" and self.endpoint['util'] == 'both'):
@@ -218,7 +218,7 @@ class Check(commands.Cog):
                             if self.user != None:
                                 await interaction.followup.send(f"Registered to: {self.user['email']}")
                             else:
-                                await member.remove_roles(self.premium_role)
+                                #await member.remove_roles(self.premium_role)
                                 await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                         
                         ## USER FOUND, NEW ENTRY IN THE DATABASE ##
@@ -235,7 +235,7 @@ class Check(commands.Cog):
                             elif self.endpoint["util"] == "standard":
                                     
                                     await db.struct_standard(email,member.id)
-                                    await member.remove_roles(self.premium_role)
+                                    #await member.remove_roles(self.premium_role)
                                     await member.add_roles(self.standard_role)
                                     await interaction.followup.send(embed = self.embed_stan,ephemeral=True)
                                     await asyncio.sleep(3)
@@ -289,7 +289,7 @@ class Check(commands.Cog):
                         elif self.info['util'] == "standard":
                             
                             await db.update_verification(email,member.id)
-                            await member.remove_roles(self.premium_role)
+                            #await member.remove_roles(self.premium_role)
                             await member.add_roles(self.standard_role)
                             await interaction.followup.send("Successfully registered to standard role",ephemeral=True)
                             await asyncio.sleep(3)
@@ -332,12 +332,12 @@ class Check(commands.Cog):
                         await interaction.followup.send("Already registered",ephemeral=True) 
                     
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard":
-                        await member.remove_roles(self.premium_role)
+                        #await member.remove_roles(self.premium_role)
                         await member.add_roles(self.standard_role)
                         await interaction.followup.send("Updated, removed premium role and given standard role",ephemeral=True)
                     
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
-                        await member.remove_roles(self.premium_role)
+                        #await member.remove_roles(self.premium_role)
                         await member.add_roles(self.standard_role)
                         await interaction.followup.send("Updated, removed premium role and given standard role",ephemeral=True)
                     
@@ -380,7 +380,7 @@ class Check(commands.Cog):
                                 await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                             else:
                                 await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
-                                await member.remove_roles(self.standard_role)
+                                #await member.remove_roles(self.standard_role)
                         
                         
                         ## USER FOUND, NEW ENTRY IN THE DATABASE ##
@@ -397,7 +397,7 @@ class Check(commands.Cog):
                             elif self.endpoint["util"] == "premium":
                                 
                                 await db.struct_premium(email,member.id)
-                                await member.remove_roles(self.standard_role)
+                                #await member.remove_roles(self.standard_role)
                                 await member.add_roles(self.premium_role)
                                 await interaction.followup.send(embed = self.embed_new,ephemeral=True)
                                 await asyncio.sleep(3)
@@ -426,7 +426,7 @@ class Check(commands.Cog):
                     elif self.info != None and self.info['user_id']=="":
 
                         if self.info["util"] == "premium":
-                            await member.remove_roles(self.standard_role)
+                            #await member.remove_roles(self.standard_role)
                             await member.add_roles(self.premium_role)
                             await db.update_verification(email,member.id)
                             await db.update_keys(email,member.id)
@@ -466,7 +466,7 @@ class Check(commands.Cog):
                     ## CHECKING IF THE USER RECIEVED A DM OR NOT ##
                     
                     elif self.dm != None and self.dm["user_id"] == member.id and self.dm['dm']==0 and self.info["util"]=="premium":
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         await member.add_roles(self.premium_role)
                         self.prem_key = await key.premium_key()
 
@@ -488,12 +488,12 @@ class Check(commands.Cog):
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
                     elif self.dm != None and self.dm["user_id"] == member.id and self.dm['dm']==1 and self.info["util"]=="premium":
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         await member.add_roles(self.premium_role)
                         await interaction.followup.send("Registered as a premium member",ephemeral=True)
 
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium":
-                        await member.remove_roles(self.standard_role)
+                        #await member.remove_roles(self.standard_role)
                         await member.add_roles(self.premium_role)
                         await interaction.followup.send("Registered to premium role",ephemeral=True)
                     

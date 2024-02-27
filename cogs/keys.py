@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import settings
 import asyncio
-from utility import key
+from utility import key,constants
 
 
 class Keys(commands.Cog):
@@ -20,9 +20,8 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'standard_key',description='Sends the key to standard in DMS')
     async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
 
-        self.stan_role = 1196567231786664017
-        self.log = interaction.guild.get_channel(settings.LOGGING_ID)
-        self.stan_role = interaction.guild.get_role(self.stan_role)
+        self.logging = interaction.guild.get_channel(constants.LOGGING_ID)
+        self.stan_role = interaction.guild.get_role(constants.STANDARD_ID)
 
         try:
 
@@ -49,7 +48,7 @@ class Keys(commands.Cog):
                             await self.channel.send(self.response)
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.log.send(f"{interaction.user.mention} recieved Standard key")
+                            await self.log.send(f"{member.mention} recieved Standard key")
 
                         except discord.errors.Forbidden as e:
                             await interaction.followup.send("DMS are closed",ephemeral=True)
@@ -71,8 +70,8 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
     async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
 
-        self.prem_role = 1196567144847118346
-        self.prem_role = interaction.guild.get_role(self.prem_role)
+        self.prem_role = interaction.guild.get_role(constants.PREMIUM_ID)
+        self.log = interaction.guild.get_channel(constants.LOGGING_ID)
 
         try:
 
@@ -99,7 +98,7 @@ class Keys(commands.Cog):
                             await self.channel.send(self.response)
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.log.send(f"{interaction.user.mention} recieved a Premium key")
+                            await self.log.send(f"{member.mention} recieved a Premium key")
 
                         except discord.errors.Forbidden as e:
                             await interaction.followup.send("DMS are closed",ephemeral=True)
