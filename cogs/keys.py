@@ -19,13 +19,13 @@ class Keys(commands.Cog):
 
     @app_commands.command(name = 'standard_key',description='Sends the key to standard in DMS')
     async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
-
-        self.logging = interaction.guild.get_channel(constants.LOGGING_ID)
-        self.stan_role = interaction.guild.get_role(constants.STANDARD_ID)
-
+        
+        await interaction.response.defer(ephemeral=True)
+        
         try:
 
-            await interaction.response.defer(ephemeral=True)
+            self.logging = interaction.guild.get_channel(constants.LOGGING_ID)
+            self.stan_role = interaction.guild.get_role(constants.STANDARD_ID)
 
             if interaction.permissions.administrator == False:
                 await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
@@ -45,10 +45,17 @@ class Keys(commands.Cog):
                         try:
                         
                             self.channel = await member.create_dm()
-                            await self.channel.send(self.response)
+                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM STANDARD TWEAKS:**
+
+{self.response}
+
+note: you can only use this on one pc (HWID) 
+''')
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.log.send(f"{member.mention} recieved Standard key")
+                            await self.log.send(f'''{member.mention} recieved Standard key
+
+{self.response}''')
 
                         except discord.errors.Forbidden as e:
                             await interaction.followup.send("DMS are closed",ephemeral=True)
@@ -70,12 +77,12 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
     async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
 
-        self.prem_role = interaction.guild.get_role(constants.PREMIUM_ID)
-        self.log = interaction.guild.get_channel(constants.LOGGING_ID)
+        await interaction.response.defer(ephemeral=True)
 
         try:
 
-            await interaction.response.defer(ephemeral=True)
+            self.prem_role = interaction.guild.get_role(constants.PREMIUM_ID)
+            self.log = interaction.guild.get_channel(constants.LOGGING_ID)
 
             if interaction.permissions.administrator == False:
                 await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
@@ -95,10 +102,17 @@ class Keys(commands.Cog):
                         try:
                             
                             self.channel = await member.create_dm()
-                            await self.channel.send(self.response)
+                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.response}
+
+note: you can only use this on one pc (HWID) 
+''')
                             await interaction.followup.send("Key sent successfull",ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.log.send(f"{member.mention} recieved a Premium key")
+                            await self.log.send(f'''{member.mention} recieved a Premium key
+                                                
+{self.response}''')
 
                         except discord.errors.Forbidden as e:
                             await interaction.followup.send("DMS are closed",ephemeral=True)

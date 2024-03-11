@@ -1,6 +1,6 @@
 import settings
 import aiohttp
-import stripe
+# import stripe
 
 try:
    

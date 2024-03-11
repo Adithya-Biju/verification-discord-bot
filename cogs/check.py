@@ -24,7 +24,13 @@ class Check(commands.Cog):
     async def check(self, interaction :discord.Interaction,email : str,member : discord.Member):
 
         try:
-            if interaction.permissions.administrator == True:
+            
+            await interaction.response.defer(ephemeral=True)  
+
+            if interaction.permissions.administrator == False:
+                await interaction.followup.send("You dont have the adequate permissions",ephemeral=True)
+            
+            else:
 
                 self.logging = interaction.guild.get_channel(1202584731896651876)
                 self.premium_role = interaction.guild.get_role(1196567144847118346)
@@ -38,9 +44,6 @@ class Check(commands.Cog):
                 self.embed_stan =  await embed.stan_embed(self.standard_download,self.standard_rev)
                 self.dms_failed =   await embed.dms_failed()
                 self.email_not_found = await embed.email_not_found()
-                
-
-                await interaction.response.defer(ephemeral=True)  
 
                 ## CHECKING THE ID IN THE DATABASE ##
 
@@ -61,10 +64,10 @@ class Check(commands.Cog):
                         if self.endpoint == False:
                             
                             if self.user != None:
-                                await interaction.followup.send(f"Registered to: {self.user['email']}")
+                                await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                             else:
-                                #await member.remove_roles(self.premium_role)
-                                #await member.remove_roles(self.standard_role)
+                                # #await member.remove_roles(self.premium_role)
+                                # #await member.remove_roles(self.standard_role)
                                 await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
                         
                         ## USER FOUND, NEW ENTRY IN THE DATABASE ##
@@ -120,11 +123,18 @@ class Check(commands.Cog):
 
                                 try:
                                     self.channel = await member.create_dm()
-                                    await self.channel.send(self.prem_key)
+                                    await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                     await asyncio.sleep(3)
-                                    await self.logging.send(f"{member.mention} recieved the premium key")
+                                    await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                         
@@ -155,11 +165,18 @@ class Check(commands.Cog):
 
                             try:
                                 self.channel = await member.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{member.mention} recieved the Premium key")
+                                await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
 
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
@@ -177,7 +194,15 @@ class Check(commands.Cog):
                         #await member.remove_roles(self.standard_role)
                         await interaction.followup.send("Already registered as premium, removing the standard role",ephemeral=True) 
                     
+                    elif (self.dm == None) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "premium" and self.endpoint ==False):
+                        #await member.remove_roles(self.standard_role)
+                        await interaction.followup.send("Already registered as premium, removing the standard role",ephemeral=True) 
+                    
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
+                        #await member.remove_roles(self.premium_role)
+                        await interaction.followup.send("Already registered as standard role, removed premium role and given standard role",ephemeral=True)
+                    
+                    elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint == False :
                         #await member.remove_roles(self.premium_role)
                         await interaction.followup.send("Already registered as standard role, removed premium role and given standard role",ephemeral=True)
                     
@@ -216,7 +241,7 @@ class Check(commands.Cog):
                         if self.endpoint == False:
                             
                             if self.user != None:
-                                await interaction.followup.send(f"Registered to: {self.user['email']}")
+                                await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                             else:
                                 #await member.remove_roles(self.premium_role)
                                 await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
@@ -278,7 +303,9 @@ class Check(commands.Cog):
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                     await asyncio.sleep(3)
-                                    await self.logging.send(f"{member.mention} recieved the premium key")
+                                    await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+    {self.prem_key}''')
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                         
@@ -310,11 +337,18 @@ class Check(commands.Cog):
 
                             try:
                                 self.channel = await member.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send("Key sent in DMS",ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{member.mention} recieved the premium key")
+                                await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
 
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
@@ -326,10 +360,19 @@ class Check(commands.Cog):
                         await interaction.followup.send("Already registered",ephemeral=True) 
 
                     ## IF EVERYTHING IS SUFFICED FOR NEW MEMBERS ##
-                
+
+                    elif (self.dm == None) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "premium" and self.endpoint == False):
+                        
+                        await interaction.followup.send("Already registered",ephemeral=True)
+
                     elif (self.dm == None) and (self.info != None and  self.info['user_id']==member.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium"):
                         
-                        await interaction.followup.send("Already registered",ephemeral=True) 
+                        await interaction.followup.send("Already registered",ephemeral=True)  
+                    
+                    elif  self.info != None and  self.info['user_id']== member.id and self.info == False:
+                        #await member.remove_roles(self.premium_role)
+                        await member.add_roles(self.standard_role)
+                        await interaction.followup.send("Updated, removed premium role and given standard role",ephemeral=True)
                     
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard":
                         #await member.remove_roles(self.premium_role)
@@ -418,6 +461,10 @@ class Check(commands.Cog):
 
                     elif  self.info != None and  self.info['user_id']== member.id :
                             await interaction.followup.send("Already registered",ephemeral=True) 
+                        
+                    elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint == False:
+                        
+                        await interaction.followup.send("Already registered",ephemeral=True) 
 
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                         
@@ -443,11 +490,18 @@ class Check(commands.Cog):
 
                                 try:
                                     self.channel = await member.create_dm()
-                                    await self.channel.send(self.prem_key)
+                                    await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                     await asyncio.sleep(3)
-                                    await self.logging.send(f"{member.mention} recieved the premium key")
+                                    await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                         
@@ -478,11 +532,18 @@ class Check(commands.Cog):
 
                             try:
                                 self.channel = await member.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{member.mention} recieved the premium key")
+                                await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
 
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
@@ -491,6 +552,11 @@ class Check(commands.Cog):
                         #await member.remove_roles(self.standard_role)
                         await member.add_roles(self.premium_role)
                         await interaction.followup.send("Registered as a premium member",ephemeral=True)
+                        
+                    elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "premium" and self.endpoint == False:
+                        #await member.remove_roles(self.standard_role)
+                        await member.add_roles(self.premium_role)
+                        await interaction.followup.send("Registered to premium role",ephemeral=True)
 
                     elif  self.info != None and  self.info['user_id']== member.id and self.info["util"] == "premium" and self.endpoint['util'] == "premium":
                         #await member.remove_roles(self.standard_role)
@@ -531,7 +597,10 @@ class Check(commands.Cog):
                         
                         if self.endpoint == False:
                             
-                            await interaction.followup.send(embed=self.email_not_found,ephemeral=True)
+                            if self.user != None:
+                                await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
+                            else:
+                                await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
 
                         ## USER FOUND, NEW ENTRY IN THE DATABASE ##
                         
@@ -548,7 +617,7 @@ class Check(commands.Cog):
                             elif self.endpoint["util"] == "premium":
                                 await db.struct_premium(email,member.id)
                                 await member.add_roles(self.premium_role)
-                                await interaction.followup.send(embed = self.embed_new(self.down,self.rev),ephemeral=True)
+                                await interaction.followup.send(embed = self.embed_new,ephemeral=True)
                                 await asyncio.sleep(3)
                                 await self.logging.send(f"{member.mention} is registered to {email} as Premium customer")
                             
@@ -588,11 +657,18 @@ class Check(commands.Cog):
 
                                 try:
                                     self.channel = await member.create_dm()
-                                    await self.channel.send(self.prem_key)
+                                    await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+    note: you can only use this on one pc (HWID) 
+    ''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send(embed=self.embed_old,ephemeral=True)
                                     await asyncio.sleep(3)
-                                    await self.logging.send(f"{member.mention} recieved the Premium key")
+                                    await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send(embed=self.dms_failed(),ephemeral=True)
                             
@@ -633,9 +709,17 @@ class Check(commands.Cog):
 
                                 try:
                                     self.channel = await member.create_dm()
-                                    await self.channel.send(self.prem_key)
+                                    await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                                     await db.dm_key_successfull(email)
                                     await interaction.followup.send(embed=self.embed_old,ephemeral=True)
+                                    await self.logging.send(f'''{member.mention} recieved the Premium key
+                                                            
+{self.prem_key}''')
                                 except discord.errors.Forbidden:
                                     await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
                             
@@ -648,10 +732,18 @@ class Check(commands.Cog):
                         await interaction.followup.send("Registered and given the premium role",ephemeral=True)
 
                     elif (self.dm == None) and (self.info != None and  self.info['user_id'] == member.id ):
-                        
-                        if self.info["util"] == "premium" and self.endpoint['util'] == "premium":
+
+                        if self.info["util"] == "premium" and self.endpoint  == False:
                             await member.add_roles(self.premium_role)
                             await interaction.followup.send("Successfully registered as premium, Role given successfully",ephemeral=True)
+                        
+                        elif self.info["util"] == "premium" and self.endpoint['util'] == "premium":
+                            await member.add_roles(self.premium_role)
+                            await interaction.followup.send("Successfully registered as premium, Role given successfully",ephemeral=True)
+                        
+                        elif self.info["util"] == "standard" and self.endpoint == False:
+                            await member.add_roles(self.standard_role)
+                            await interaction.followup.send("Successfully registered as standard, Role given successfully",ephemeral=True)
 
                         elif self.info["util"] == "standard" and self.endpoint['util'] == "standard":
                             await member.add_roles(self.standard_role)
@@ -683,8 +775,7 @@ class Check(commands.Cog):
                             await interaction.followup.send("Error",ephemeral=True)
                 else:
                     await interaction.followup.send("Error",ephemeral=True)
-            else:
-                await interaction.followup.send("You dont have the adequate permissions",ephemeral=True)
+
         except Exception as e:
                 print(f"Unexpected Error: {e}")
                 await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)

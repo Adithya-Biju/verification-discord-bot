@@ -31,22 +31,22 @@ class Verification(commands.Cog):
     @app_commands.command(name="verify",description="Verify to get the premium role")
     async def verify(self, interaction :discord.Interaction,email : str):
 
-        self.logging = interaction.guild.get_channel(1202584731896651876)
-        self.premium_role = interaction.guild.get_role(1196567144847118346)
-        self.standard_role = interaction.guild.get_role(1196567231786664017)
-        self.standard_download = 1196576005758926978
-        self.standard_rev = 1196575312650174594
-        self.premium_download = 1196576005758926978
-        self.premium_rev = 1196574152367284264
-        self.embed_old =  await embed.old_prem_embed(self.premium_download,self.premium_rev)
-        self.embed_new =  await embed.new_prem_embed(self.premium_download,self.premium_rev)
-        self.embed_stan =  await embed.stan_embed(self.standard_download,self.standard_rev)
-        self.dms_failed =   await embed.dms_failed()
-        self.email_not_found = await embed.email_not_found()
-        
         try:
 
             await interaction.response.defer(ephemeral=True)  
+
+            self.logging = interaction.guild.get_channel(1202584731896651876)
+            self.premium_role = interaction.guild.get_role(1196567144847118346)
+            self.standard_role = interaction.guild.get_role(1196567231786664017)
+            self.standard_download = 1196576005758926978
+            self.standard_rev = 1196575312650174594
+            self.premium_download = 1196576005758926978
+            self.premium_rev = 1196574152367284264
+            self.embed_old =  await embed.old_prem_embed(self.premium_download,self.premium_rev)
+            self.embed_new =  await embed.new_prem_embed(self.premium_download,self.premium_rev)
+            self.embed_stan =  await embed.stan_embed(self.standard_download,self.standard_rev)
+            self.dms_failed =   await embed.dms_failed()
+            self.email_not_found = await embed.email_not_found()  
 
             ## CHECKING THE ID IN THE DATABASE ##
 
@@ -67,7 +67,7 @@ class Verification(commands.Cog):
                     if self.endpoint == False:
                         
                         if self.user != None:
-                            await interaction.followup.send(f"Registered to: {self.user['email']}")
+                            await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                         else:
                             # #await interaction.user.remove_roles(self.premium_role)
                             # #await interaction.user.remove_roles(self.standard_role)
@@ -126,11 +126,18 @@ class Verification(commands.Cog):
 
                             try:
                                 self.channel = await interaction.user.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{interaction.user.mention} recieved the premium key")
+                                await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
@@ -161,11 +168,18 @@ class Verification(commands.Cog):
 
                         try:
                             self.channel = await interaction.user.create_dm()
-                            await self.channel.send(self.prem_key)
+                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                             await db.dm_key_successfull(email)
                             await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.logging.send(f"{interaction.user.mention} recieved the Premium key")
+                            await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
 
                         except discord.errors.Forbidden:
                             await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
@@ -230,7 +244,7 @@ class Verification(commands.Cog):
                     if self.endpoint == False:
                         
                         if self.user != None:
-                            await interaction.followup.send(f"Registered to: {self.user['email']}")
+                            await interaction.followup.send(f"Registered to: {self.user['email']}",ephemeral=True)
                         else:
                             #await interaction.user.remove_roles(self.premium_role)
                             await interaction.followup.send(embed = self.email_not_found,ephemeral=True)
@@ -292,7 +306,9 @@ class Verification(commands.Cog):
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{interaction.user.mention} recieved the premium key")
+                                await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
@@ -324,11 +340,18 @@ class Verification(commands.Cog):
 
                         try:
                             self.channel = await interaction.user.create_dm()
-                            await self.channel.send(self.prem_key)
+                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                             await db.dm_key_successfull(email)
                             await interaction.followup.send("Key sent in DMS",ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.logging.send(f"{interaction.user.mention} recieved the premium key")
+                            await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
 
                         except discord.errors.Forbidden:
                             await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
@@ -470,11 +493,18 @@ class Verification(commands.Cog):
 
                             try:
                                 self.channel = await interaction.user.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{interaction.user.mention} recieved the premium key")
+                                await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
                     
@@ -505,11 +535,18 @@ class Verification(commands.Cog):
 
                         try:
                             self.channel = await interaction.user.create_dm()
-                            await self.channel.send(self.prem_key)
+                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                             await db.dm_key_successfull(email)
                             await interaction.followup.send(embed = self.embed_old,ephemeral=True)
                             await asyncio.sleep(3)
-                            await self.logging.send(f"{interaction.user.mention} recieved the premium key")
+                            await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
 
                         except discord.errors.Forbidden:
                             await interaction.followup.send(embed = self.dms_failed,ephemeral=True)
@@ -580,7 +617,7 @@ class Verification(commands.Cog):
                         elif self.endpoint["util"] == "premium":
                             await db.struct_premium(email,interaction.user.id)
                             await interaction.user.add_roles(self.premium_role)
-                            await interaction.followup.send(embed = self.embed_new(self.down,self.rev),ephemeral=True)
+                            await interaction.followup.send(embed = self.embed_new,ephemeral=True)
                             await asyncio.sleep(3)
                             await self.logging.send(f"{interaction.user.mention} is registered to {email} as Premium customer")
                         
@@ -620,11 +657,18 @@ class Verification(commands.Cog):
 
                             try:
                                 self.channel = await interaction.user.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed=self.embed_old,ephemeral=True)
                                 await asyncio.sleep(3)
-                                await self.logging.send(f"{interaction.user.mention} recieved the Premium key")
+                                await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed=self.dms_failed(),ephemeral=True)
                         
@@ -665,9 +709,18 @@ class Verification(commands.Cog):
 
                             try:
                                 self.channel = await interaction.user.create_dm()
-                                await self.channel.send(self.prem_key)
+                                await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
+
+{self.prem_key}
+
+note: you can only use this on one pc (HWID) 
+''')
                                 await db.dm_key_successfull(email)
                                 await interaction.followup.send(embed=self.embed_old,ephemeral=True)
+                                await asyncio.sleep(3)
+                                await self.logging.send(f'''{interaction.user.mention} recieved the Premium key
+                                                        
+{self.prem_key}''')
                             except discord.errors.Forbidden:
                                 await interaction.followup.send(embed=self.dms_failed,ephemeral=True)
                         

@@ -26,15 +26,13 @@ class database(commands.Cog):
     ])
     async def insert(self, interaction :discord.Interaction,email : str,member:discord.Member, util: discord.app_commands.Choice[int]):
         
-        self.premium_role = 1196567144847118346
-        self.standard_role = 1196567231786664017
-        self.premium_role = interaction.guild.get_role(self.premium_role)
-        self.standard_role = interaction.guild.get_role(self.standard_role)
-
         try:
 
             await interaction.response.defer(ephemeral=True)
-
+            self.premium_role = 1196567144847118346
+            self.standard_role = 1196567231786664017
+            self.premium_role = interaction.guild.get_role(self.premium_role)
+            self.standard_role = interaction.guild.get_role(self.standard_role)
             self.endpoint = await payment.endpoint(email)
             self.info = await db.find_dm(email)
 
@@ -42,11 +40,6 @@ class database(commands.Cog):
                 await interaction.followup.send("You don't have the permissions to user this command",ephemeral=True)
             
             else:
-
-                if self.info != None or self.endpoint != False:
-                    await interaction.followup.send("Customer exists, use the /check command",ephemeral=True)
-                
-                elif self.info == None and self.endpoint == False :
 
                     if util.value == 1:
                         
