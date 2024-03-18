@@ -1,6 +1,11 @@
+from typing import Any, Type
+from discord.app_commands.tree import CommandTree
+from discord.ext.commands.bot import _default
 import settings
 import discord 
 from discord.ext import commands
+from cogs import admin
+
 
 logger = settings.logging.getLogger("bot")
 class Main:
@@ -22,7 +27,8 @@ class Main:
                         await self.bot.load_extension(f"cogs.{cog_file.name[:-3]}")
             except Exception as e:
                 print(f"Error loading cog: {e}")
-        
+
+     
         @self.bot.command()
         @commands.has_permissions(administrator=True)
         async def reload(ctx, cog: str):
@@ -32,6 +38,7 @@ class Main:
             except Exception as e:
                 print(f"Error loading cog: {e}")
         
+
         
         self.bot.run(settings.DISCORD_API_SECRET,root_logger=True)
 

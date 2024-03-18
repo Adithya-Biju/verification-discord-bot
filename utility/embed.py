@@ -1,5 +1,5 @@
 import discord
-
+from discord.ext import commands
 
 async def new_prem_embed(download,review):
         embed = discord.Embed(
@@ -52,7 +52,7 @@ async def dms_failed():
 
 async def email_not_found():
         embed = discord.Embed(
-            title="EMAIL ADRESS NOT FOUND",
+            title="EMAIL ADDRESS NOT FOUND",
             color = 0x0000ff,
             description=f'''If you bought the tweaks, do this:
 
@@ -63,3 +63,16 @@ async def email_not_found():
 **Me or my admins will take care of it (note: it may take up to 24 hours)**'''
 )
         return embed 
+
+
+async def faq():
+        embed = discord.Embed(
+                title = "EXM FAQ DESK",
+                color = 0x0000ff,
+                description= '''Welcome to EXM's FAQ Desk!
+It is a channel for frequently asked questions; you will easily find an answer to common questions regarding Tweaking Utiltiy!
+
+By selecting a question using the below dropdown, you will receive an answer to that question.'''
+        )
+        return embed
+
