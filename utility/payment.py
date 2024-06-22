@@ -25,11 +25,14 @@ try:
 
                                 for i in payment:
                                 
-                                    if i == 25 or i == 27.5:
+                                    if i == 25 or i == 27.5 or i == 29.99:
                                         p+=1
                                 
-                                    else:
+                                    elif i == 15 or i == 17.5 or i == 19.99:
                                         s+=1
+                                    
+                                    else:
+                                        pass
                                         
                             if p>=1 and s == 0:
                                 return{"util":"premium"}
@@ -68,9 +71,9 @@ try:
 
                         else:
                             for i in p:
-                                if i == 2500 or i == 2750:
+                                if i == 2500 or i == 2750 or i == 2999:
                                     prem+=1
-                                elif i == 1500 or i == 1750:
+                                elif i == 1500 or i == 1750 or i == 1999:
                                     stan+=1
                                 else:
                                     pass
@@ -79,7 +82,7 @@ try:
                         if prem >= 1 and stan == 0:
                             return {"util":"premium"}
                         
-                        elif stan >= 1 and stan == 0:
+                        elif stan >= 1 and prem == 0:
                             return{"util":"standard"}
 
                         elif prem>=1 and stan>=1:

@@ -20,9 +20,9 @@ class Keys(commands.Cog):
     @app_commands.command(name = 'standard_key',description='Sends the key to standard in DMS')
     async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
         
-        await interaction.response.defer(ephemeral=True)
-        
         try:
+
+            await interaction.response.defer(ephemeral=True)
 
             self.logging = interaction.guild.get_channel(constants.LOGGING_ID)
             self.stan_role = interaction.guild.get_role(constants.STANDARD_ID)
@@ -76,10 +76,10 @@ note: you can only use this on one pc (HWID)
 
     @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
     async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
-
-        await interaction.response.defer(ephemeral=True)
-
+        
         try:
+
+            await interaction.response.defer(ephemeral=True)
 
             self.prem_role = interaction.guild.get_role(constants.PREMIUM_ID)
             self.log = interaction.guild.get_channel(constants.LOGGING_ID)
