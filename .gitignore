@@ -94,3 +94,5 @@ cython_debug/
 __pycache__/
 *.py[cod]
 *$py.class
+
+models/

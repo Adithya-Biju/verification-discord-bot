@@ -5,60 +5,42 @@ from discord import app_commands
 import settings
 from discord.ui import Select,Button,View
 from utility import embed
+from tortoise.exceptions import IntegrityError
+from models.ticket_model import Ticket
+from service import TicketView, TicketMenu
 
 
-class SelectMenu(discord.ui.Select):
-    def __init__(self):
-        options = [
-                discord.SelectOption(label = "Spoof", 
-                                     value = "0",
-                                     emoji="🔵"),
-                discord.SelectOption(label = "Lag Gpu Wise",
-                                     value = "1",
-                                     emoji="🔵"),
-                discord.SelectOption(label="Other", 
-                                     value = "2",
-                                     emoji="🔵")
 
-            ]
-        super().__init__(placeholder="Select a question",options=options,custom_id="SelectMenu")
-    
-    async def callback(self, interaction: discord.Interaction):
+# class ButtonMenu(discord.ui.Button):
+#     def __init__(self):
+#         super().__init__(label= "Open a ticket",
+#                             style = discord.ButtonStyle.green,
+#                             emoji = '📝',
+#                             custom_id="ButtonMenu")
 
-        if self.values[0] == "0":
-            await interaction.response.send_message("If you **spoof**, you **WON'T** get a key reset since we do **NOT** condone spoofing.",ephemeral = True)
+#     async def callback(self, interaction: discord.Interaction):
+#         await interaction.response.defer(ephemeral=True)
+#         try:
+   
+#             user_data = await Ticket.create(user_id = interaction.user.id)
+#             thread = await interaction.channel.create_thread(
+#                 name=user_data.ticket_id,
+#                 type=discord.ChannelType.private_thread,  # or private_thread
+#         )
+#             await thread.send(f"{interaction.user.mention}, your ticket has been created! 🎟️")
+   
+#             await interaction.followup.send(f"Ticket created with ID: {user_data.ticket_id}", ephemeral=True)
 
-        elif self.values[0] == "1":
-            await interaction.response.send_message("If you are experiencing lagging **GPU-wise** after doing tweaks, just play some matches; your cache has to build up it will eventually get good",ephemeral = True)
+#         except IntegrityError as e:
+#         # Handle integrity errors (e.g., if you have constraints in your table)
+#             await interaction.followup.send("Failed to create ticket due to integrity error.")
+#             print(f"Integrity error: {str(e)}")
 
-        elif self.values[0] == "2":
-            await interaction.response.send_message(view = ButtonView(),ephemeral = True)
+#         except Exception as e:
+#             # Catch all other exceptions
+#             await interaction.followup.send("An error occurred while creating the ticket.")
+#         print(f"Error: {str(e)}")
 
-        else:
-            pass 
-
-
-class ButtonMenu(discord.ui.Button):
-    def __init__(self):
-        super().__init__(label= "Open a ticket",
-                            style = discord.ButtonStyle.green,
-                            emoji = '📝',
-                            custom_id="ButtonMenu")
-    
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Under construction",ephemeral=True)
-
-
-class ButtonView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(ButtonMenu())
-
-
-class SelectView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(SelectMenu())
 
 
 class Admin(commands.Cog):
@@ -67,16 +49,12 @@ class Admin(commands.Cog):
 
         self.bot = bot
         self.bot.remove_command("help")
-        self.select_persistent_view = SelectView()
-        self.button_persistent_view = ButtonView()
     
     async def cog_load(self):
-        self.bot.add_view(self.select_persistent_view)
-        self.bot.add_view(self.button_persistent_view)
-    
-    async def cog_unload(self):
-        self.bot.add_view(self.select_persistent_view)
-        self.bot.add_view(self.button_persistent_view)
+        self.ticket_menu = await TicketMenu.generate_menu_options()
+        self.ticket_view = discord.ui.View(timeout=None)
+        self.ticket_view.add_item(self.ticket_menu)
+        self.bot.add_view(self.ticket_view)
 
 
     @commands.Cog.listener()
@@ -86,12 +64,12 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def faq(self,ctx):
+    async def ticket(self,ctx):
 
-        self.faq_embed = await embed.faq()
+        self.faq_embed = await embed.ticket()
          
         try:
-            await ctx.send(embed = self.faq_embed, view = SelectView())
+            await ctx.send(embed = self.faq_embed, view = TicketView())
 
         except Exception as e:
             print(f"Unexpected Error: {e}")

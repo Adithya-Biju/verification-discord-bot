@@ -5,7 +5,7 @@ import settings
 import discord 
 from discord.ext import commands
 from cogs import admin
-
+from tortoise import Tortoise
 
 logger = settings.logging.getLogger("bot")
 class Main:
@@ -19,6 +19,20 @@ class Main:
         @self.bot.event
         async def on_ready():
 
+            try:
+                models = []
+                for models_file in settings.MODELS_DIR.glob("*.py"):
+                    if str(models_file) != str(settings.MODELS_DIR)+r"\__init__.py":
+                        models.append(f"models.{models_file.name[:-3]}")
+            except Exception as e:
+                print(f"Error loading model: {e}")
+
+            await Tortoise.init(
+            db_url=settings.POSTGRES,  
+            modules = {"models":models}
+        )            
+
+            await Tortoise.generate_schemas()
             print("Connected")
 
             try:

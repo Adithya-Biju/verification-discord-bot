@@ -2,9 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from utility import db,key,payment,embed
-import asyncio
 import settings
-
+import asyncio
 
 
 class Check(commands.Cog):

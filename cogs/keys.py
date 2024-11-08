@@ -4,7 +4,7 @@ from discord import app_commands
 import settings
 import asyncio
 from utility import key,constants
-
+from service import find_the_key
 
 class Keys(commands.Cog):
 
@@ -128,6 +128,28 @@ note: you can only use this on one pc (HWID)
         except Exception as e:
             print(f"Unexpected Error: {e}")
             await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
+
+    @app_commands.command(name = 'missing_key',description='Check the users keys')
+    async def missing_key(self, interaction :discord.Interaction, member : discord.Member):
+
+        try:
+
+            await interaction.response.defer(ephemeral=True)
+
+            if interaction.permissions.administrator == False:
+                await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
+            
+            else:
+                key_record = await find_the_key(member.id)
+                
+                if key_record:
+                    for record in key_record:
+                        await interaction.followup.send(f"Key : **{record.key}**")
+                
+                else:
+                    await interaction.followup.send(f"To find your key, check <#1211411223090823290>")
+        except:
+            await interaction.followup.send("Missing key command crashed ", ephemeral=True)
 
 async def setup(bot):
         await bot.add_cog(Keys(bot),guilds = [discord.Object(id=settings.GUILD_ID)])

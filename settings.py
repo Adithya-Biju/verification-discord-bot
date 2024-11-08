@@ -17,9 +17,11 @@ API_PASSWORD = os.getenv("API_PASSWORD")
 GUILD_ID = os.getenv("GUILD_ID")
 LOGGING_ID = os.getenv("LOGGING_ID")
 STRIPE_KEY = os.getenv("STRIPE_KEY")
+POSTGRES = os.getenv("POSTGRES")
 
 BASE_DIR = pathlib.Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"
+MODELS_DIR = BASE_DIR / "models"
 
 LOGGING_CONFIG = {
     "version": 1,

@@ -25,10 +25,10 @@ try:
 
                                 for i in payment:
                                 
-                                    if i == 25 or i == 27.5 or i == 29.99:
+                                    if i >= 25:
                                         p+=1
                                 
-                                    elif i == 15 or i == 17.5 or i == 19.99:
+                                    elif i>=15 and i<=20:
                                         s+=1
                                     
                                     else:
@@ -71,9 +71,9 @@ try:
 
                         else:
                             for i in p:
-                                if i == 2500 or i == 2750 or i == 2999:
+                                if i >= 2500 :
                                     prem+=1
-                                elif i == 1500 or i == 1750 or i == 1999:
+                                elif i >= 1500 and i <= 2000:
                                     stan+=1
                                 else:
                                     pass

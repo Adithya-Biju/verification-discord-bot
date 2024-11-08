@@ -65,14 +65,14 @@ async def email_not_found():
         return embed 
 
 
-async def faq():
+async def ticket():
         embed = discord.Embed(
-                title = "EXM FAQ DESK",
+                title = "EXM TICKET DESK",
                 color = 0x0000ff,
-                description= '''Welcome to EXM's FAQ Desk!
-It is a channel for frequently asked questions; you will easily find an answer to common questions regarding Tweaking Utiltiy!
+                description= '''Welcome to EXM's ticket Desk!
+It is a channel to create ticket;
 
-By selecting a question using the below dropdown, you will receive an answer to that question.'''
+By selecting a question using the below dropdown, you will open ticket.'''
         )
         return embed
 
