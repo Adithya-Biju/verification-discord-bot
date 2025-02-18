@@ -42,27 +42,19 @@ class database(commands.Cog):
             else:
 
                     if util.value == 1:
-                        
-                        await db.struct_premium(email,member.id)
+                        await db.struct_premium(email, member.id)
                         await member.add_roles(self.premium_role)
-                        await interaction.followup.send(f'''Successfully registered and given the roles''',ephemeral=True)
-                    
-
                     elif util.value == 2:
-
-                        await db.struct_standard(email,member.id)
+                        await db.struct_standard(email, member.id)
                         await member.add_roles(self.standard_role)
-                        await interaction.followup.send(f'''Successfully registered and given the roles''',ephemeral=True)
-                    
                     elif util.value == 3:
-
-                        await db.struct_both(email,member.id)
-                        await member.add_roles(self.premium_role)
-                        await member.add_roles(self.standard_role)
-                        await interaction.followup.send(f'''Successfully registered and given the roles ''',ephemeral=True)
-                    
+                        await db.struct_both(email, member.id)
+                        await member.add_roles(self.premium_role, self.standard_role)
                     else:
-                        await interaction.followup.send("Error",ephemeral=True)
+                        await interaction.followup.send("Invalid utility type selected.", ephemeral=True)
+
+                    
+                    await interaction.followup.send(f"Successfully registered and assigned roles to {member.name}.", ephemeral=True)
 
         except Exception as e:
             print(e)
