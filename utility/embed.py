@@ -145,6 +145,7 @@ async def checktemp_embed():
                 color = 0x0000ff,
                 description= '''Download hwinfo64, install it, open the app and tick the "sensors-only" option here and click start. Then scroll down till you see CPU and GPU temperature and make screenshot of the app as shown on the picture.'''
         )
+        embed.set_image(url=f"https://cdn.discordapp.com/attachments/1341271867310477343/1343159891384209459/hwinfo.png?ex=67bc42a0&is=67baf120&hm=a3461375c48f777492c422a65ecb977c311315ff31c539ed7d9d2baa971e33dc&")
         return embed
 
 

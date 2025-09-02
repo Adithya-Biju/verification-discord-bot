@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import settings
 import asyncio
-from utility import key,constants,permissions
+from utility import key,constants
 from service import find_the_key
 
 class Keys(commands.Cog):
@@ -134,11 +134,9 @@ Operation performed by {interaction.user.mention}''')
             await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
 
     @app_commands.command(name = 'missing_key',description='Check the users keys')
-    # @permissions.check_permissions()
     async def missing_key(self, interaction :discord.Interaction, member : discord.Member = None):
 
         try:
-            print(interaction.command.name)
             await interaction.response.defer(ephemeral=True)
 
             if member is None:
@@ -154,9 +152,8 @@ Operation performed by {interaction.user.mention}''')
                 await interaction.followup.send(key_record)
 
             elif member.id != interaction.user.id:
-                print(interaction.user.roles)
 
-                if interaction.permissions.administrator == False or "Community":
+                if interaction.permissions.administrator == False:
                     await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
                 
                 else:
