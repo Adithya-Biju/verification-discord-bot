@@ -123,7 +123,7 @@ async def hwid_embed(option : int):
                         description= '''please do this:
 
 1. Open the Start menu, type in 'cmd', and hit Enter.
-2. In the command prompt window, paste the following command: 'wmic bios get serialnumber' and press Enter.
+2. In the command prompt window, paste the following command: 'wmic baseboard get serialnumber' and press Enter.
 3. Copy the bios number that popped up and send it here plus take screenshot of it.
 ''')
         
@@ -133,8 +133,9 @@ async def hwid_embed(option : int):
                         description= '''please do this:
 
 1. Open the Start menu by pressing the windows key on your keyboard, type in 'powershell' and find "Powershell" and click "Run as administrator".
-2. Paste the following command into the powershell window that popped up: `Get-WmiObject -Class Win32_BIOS | Select-Object SerialNumber`
+2. Paste the following command into the powershell window that popped up: Get-WmiObject Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
 3. Copy the bios number that popped up and send it here plus take screenshot of it.
+4. If the previous command doesn't work, please use: Get-CimInstance Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
 ''')
                 
         return embed
