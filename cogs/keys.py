@@ -17,65 +17,6 @@ class Keys(commands.Cog):
          print("Keys cog loaded")
 
 
-    @app_commands.command(name = 'standard_key',description='Sends the key to standard in DMS')
-    async def standard_key(self, interaction :discord.Interaction, member : discord.Member):
-        
-        try:
-
-            await interaction.response.defer(ephemeral=True)
-
-            self.logging = interaction.guild.get_channel(constants.LOGGING_ID)
-            self.stan_role = interaction.guild.get_role(constants.STANDARD_ID)
-
-            if interaction.permissions.administrator == False:
-                await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
-            
-            else:
-                 
-                if self.stan_role in member.roles:
-
-                    self.response = await key.standard_key()
-
-                    if self.response == False:
-                        
-                        await interaction.followup.send("Key authy is probably down",ephemeral=True)
-                    
-                    elif self.response != False:
-
-                        try:
-                        
-                            self.channel = await member.create_dm()
-                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM STANDARD TWEAKS:**
-
-{self.response}
-
-note: you can only use this on one pc (HWID) 
-''')
-                            await interaction.followup.send("Key sent successfull",ephemeral=True)
-                            await asyncio.sleep(3)
-                            await self.log.send(f'''{member.mention} recieved Standard key
-
-{self.response}
-
-Operation performed by {interaction.user.mention}''')
-
-                        except discord.errors.Forbidden as e:
-                            await interaction.followup.send("DMS are closed",ephemeral=True)
-
-                    else:
-                        
-                        await interaction.followup.send("Error",ephemeral=True)
-                
-                else:
-
-                    await interaction.followup.send("User doesn't have the standard role",ephemeral=True)
-
-        except Exception as e:
-            print(f"Unexpected Error: {e}")
-            await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
-
-
-
     @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
     async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
         

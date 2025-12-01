@@ -1,9 +1,6 @@
 from discord.ext import commands
 import discord 
 from discord import app_commands
-import discord.ext
-import discord.ext.commands
-import settings
 from utility import embed
 class AutoMessages(commands.Cog):
 
@@ -190,7 +187,4 @@ class AutoMessages(commands.Cog):
 
 async def setup(bot):
 
-    await bot.add_cog(
-        AutoMessages(bot), 
-        guilds=[discord.Object(id=guild_id) for guild_id in [settings.GUILD_ID,1177410668606009444,1203278938374414407]]
-    )
+    await bot.add_cog(AutoMessages(bot))

@@ -4,9 +4,14 @@ import pathlib
 from logging.config import dictConfig
 import logging
 
+logger = logging.getLogger("bot")
+
 load_dotenv()
 
+WEBHOOK_API_KEY = os.getenv("WEBHOOK_API_KEY")
+X_API_KEY = os.getenv("X-API-KEY")
 DISCORD_API_SECRET = os.getenv("DISCORD_TOKEN")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 STANDARD_KEYS = os.getenv("STANDARD_KEYS")
 PREMIUM_KEY = os.getenv("PREMIUM_KEY")
 APPLICATION_ID = os.getenv("APPLICATION_ID")
@@ -18,6 +23,8 @@ GUILD_ID = os.getenv("GUILD_ID")
 LOGGING_ID = os.getenv("LOGGING_ID")
 STRIPE_KEY = os.getenv("STRIPE_KEY")
 POSTGRES = os.getenv("POSTGRES")
+MONGO_DB_SOFTWARE = os.getenv("MONGO_DB_SOFTWARE")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 BASE_DIR = pathlib.Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"
@@ -25,7 +32,7 @@ MODELS_DIR = BASE_DIR / "models"
 
 LOGGING_CONFIG = {
     "version": 1,
-    "disabled_existing_loggers": False,
+    "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
             "format": "%(levelname)-10s - %(asctime)s - %(module)-15s : %(message)s"
@@ -45,14 +52,15 @@ LOGGING_CONFIG = {
         },
         "file": {
             "level": "INFO",
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "logs/infos.log",
-            "mode": "w",
+            "maxBytes": 5_000_000,   # Rotate at 5 MB
+            "backupCount": 3,        # Keep 3 backup logs
             "formatter": "verbose",
         },
     },
     "loggers": {
-        "bot": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "bot": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
         "discord": {
             "handlers": ["console2", "file"],
             "level": "INFO",
@@ -60,4 +68,5 @@ LOGGING_CONFIG = {
         },
     },
 }
+
 dictConfig(LOGGING_CONFIG)

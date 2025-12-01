@@ -1,35 +1,24 @@
 import discord
 from discord.ext import commands
 
-async def new_prem_embed(download,review):
+async def new_prem_embed():
         embed = discord.Embed(
             title="Hello, Thank you for purchasing our product",
             color = 0x0000ff,
-            description=f'''You can download it in this channel: <#{download}>
+            description=f'''You can download it in this channel: https://discord.com/channels/1196563515926909008/1196575829560393849
 
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
+**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#1196574152367284264>'''
 )
         return embed
 
-async def old_prem_embed(download,review):
+async def old_prem_embed():
         embed = discord.Embed(
             title="Hello, Thanks for being an amazing customer",
             color = 0x0000ff,
-            description=f'''• You can download it in this channel: <#{download}>
+            description=f'''• You can download it in this channel: <#1196576005758926978>
 • You can find your license key in dms
 
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
-)
-        return embed
-
-
-async def stan_embed(download,review):
-        embed = discord.Embed(
-            title="Hello, Thank you for purchasing our product",
-            color = 0x0000ff,
-            description=f'''You can download it in this channel: <#{download}>
-
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
+**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#1196574152367284264>'''
 )
         return embed
 
@@ -124,7 +113,7 @@ async def hwid_embed(option : int):
 
 1. Open the Start menu, type in 'cmd', and hit Enter.
 2. In the command prompt window, paste the following command: 'wmic baseboard get serialnumber' and press Enter.
-3. Copy the bios number that popped up and send it here plus take screenshot of it.
+3. Copy the number that popped up and send it here plus take screenshot of it.
 ''')
         
         else:
@@ -134,7 +123,7 @@ async def hwid_embed(option : int):
 
 1. Open the Start menu by pressing the windows key on your keyboard, type in 'powershell' and find "Powershell" and click "Run as administrator".
 2. Paste the following command into the powershell window that popped up: Get-WmiObject Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
-3. Copy the bios number that popped up and send it here plus take screenshot of it.
+3. Copy the number that popped up and send it here plus take screenshot of it.
 4. If the previous command doesn't work, please use: Get-CimInstance Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
 ''')
                 

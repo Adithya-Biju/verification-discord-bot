@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord import app_commands
 from utility import db,key,payment,embed
 import settings
-import asyncio
 
 
 class Check(commands.Cog):
