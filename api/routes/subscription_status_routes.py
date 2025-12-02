@@ -7,7 +7,7 @@ EXM_WEBHOOK_SECRET = WEBHOOK_API_KEY
 
 
 #WEBHOOK ENTRY ENDPOINT
-@router.post("/webhook/discord_bot")
+@router.post("/webhook/subscription_status")
 async def exm_webhook(
     request: Request,
     x_exm_key: str = Header(None),

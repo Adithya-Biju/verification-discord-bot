@@ -11,7 +11,6 @@ load_dotenv()
 WEBHOOK_API_KEY = os.getenv("WEBHOOK_API_KEY")
 X_API_KEY = os.getenv("X-API-KEY")
 DISCORD_API_SECRET = os.getenv("DISCORD_TOKEN")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 STANDARD_KEYS = os.getenv("STANDARD_KEYS")
 PREMIUM_KEY = os.getenv("PREMIUM_KEY")
 APPLICATION_ID = os.getenv("APPLICATION_ID")
@@ -21,10 +20,8 @@ API_USSERNAME = os.getenv("API_USERNAME")
 API_PASSWORD = os.getenv("API_PASSWORD")
 GUILD_ID = os.getenv("GUILD_ID")
 LOGGING_ID = os.getenv("LOGGING_ID")
-STRIPE_KEY = os.getenv("STRIPE_KEY")
 POSTGRES = os.getenv("POSTGRES")
 MONGO_DB_SOFTWARE = os.getenv("MONGO_DB_SOFTWARE")
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 BASE_DIR = pathlib.Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"
