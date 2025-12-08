@@ -1,24 +1,28 @@
 import discord
 from discord.ext import commands
 
-async def new_prem_embed():
+async def old_prem_embed():
         embed = discord.Embed(
-            title="Hello, Thank you for purchasing our product",
+            title="Hello, you have been verified as a premium customer (legacy) and granted access to priority support & other benefits",
             color = 0x0000ff,
-            description=f'''You can download it in this channel: https://discord.com/channels/1196563515926909008/1196575829560393849
-
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#1196574152367284264>'''
+            description=f'''Have an amazing rest of your day! ❤️'''
 )
         return embed
 
-async def old_prem_embed():
+async def new_prem_embed():
         embed = discord.Embed(
-            title="Hello, Thanks for being an amazing customer",
+            title="Hello, you have been verified as a premium customer and granted access to priority support & other benefits. After your subscribtion ends you will lose access",
             color = 0x0000ff,
-            description=f'''• You can download it in this channel: <#1196576005758926978>
-• You can find your license key in dms
+            description=f'''Have an amazing rest of your day! ❤️'''
+)
+        return embed
 
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#1196574152367284264>'''
+
+async def existing_embed():
+        embed = discord.Embed(
+            title="Hello, you already are verified in the discord server",
+            color = 0x0000ff,
+            description=f'''If you think there is an error, please open a ticket in https://discord.com/channels/1196563515926909008/1303435489302286397'''
 )
         return embed
 
@@ -41,15 +45,10 @@ async def dms_failed():
 
 async def email_not_found():
         embed = discord.Embed(
-            title="EMAIL ADDRESS NOT FOUND",
+            title="Your email address was not found",
             color = 0x0000ff,
-            description=f'''If you bought the tweaks, do this:
-
-1. Open a ticket by typing /open
-
-2. Put in proof of purchase (IE: receipt)
-
-**Me or my admins will take care of it (note: it may take up to 24 hours)**'''
+            description=f'''
+If you bought premium, open a purchase/billing https://discord.com/channels/1196563515926909008/1303435489302286397 and give us proof of purchase '''
 )
         return embed 
 

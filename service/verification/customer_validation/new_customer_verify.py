@@ -1,52 +1,75 @@
 from utility.payment import new_endpoint
 from models import Customer
 from utility.server_roles import role_updates
-from utility.embed import email_not_found, new_prem_embed, old_prem_embed
+from utility.embed import email_not_found, new_prem_embed, existing_embed
 import discord 
+from utility import constants
 
-
-async def new_ver_validation(bot, user_id, email = None):
-
+async def new_ver_validation(bot, user_id, email=None):
     email_check = await Customer.filter(email=email).first()
+    log_guild = bot.get_guild(constants.LOG_SERVER)
+    log_channel = log_guild.get_channel(constants.VERIFY_LOG)
 
-    #If email exists and is linked to someone else other than the user who used it 
-    if email_check and email_check.user_id != user_id: 
-        return discord.Embed(
-            title="EMAIL ADDRESS ALREADY REGISTERED",
-            color = 0x0000ff)
-        
-    #If email is already linked to the user
-    if await Customer.get_or_none(user_id=user_id): 
-        return await old_prem_embed()
+    # EMAIL TAKEN
+    if email_check and email_check.user_id != user_id:
+        return {
+            "status": "email_taken",
+            "embed": discord.Embed(title="EMAIL ADDRESS ALREADY REGISTERED", color=0x0000ff),
+            "is_old": False,
+            "is_new": False
+        }
 
-    #If email doesnt exists in the db we hit the endpoint
+    # ALREADY VERIFIED (new or old)
+    existing = await Customer.get_or_none(user_id=user_id)
+    if existing:
+        return {
+            "status": "already_verified",
+            "embed": await existing_embed(),
+            "is_old": existing.has_premium_old,
+            "is_new": existing.has_premium_new
+        }
+
+    # HIT API
     data = await new_endpoint(email)
 
-    if data:
+    if not data:
+        return {
+            "status": "none",
+            "embed": await email_not_found(),
+            "is_old": False,
+            "is_new": False
+        }
 
-        if len(data["subscriptions"]) > 0  :
-
-            await Customer.update_or_create(
+    # NEW PREMIUM ACTIVE
+    if len(data["subscriptions"]) > 0:
+        await Customer.update_or_create(
             user_id=user_id,
-            defaults={
-                "has_premium_new": True,
-                "email": email
-            }) 
-            
-            await role_updates(bot, user_id)
-            return await new_prem_embed()
-        
-        else:
+            defaults={"has_premium_new": True, "email": email}
+        )
+        await role_updates(bot, user_id)
 
-            await Customer.update_or_create(
-            user_id=user_id,
-            defaults={
-                "email": email
-            }) 
-            
-            await role_updates(bot, user_id)
-            return await email_not_found()
-    
-    else:
-        return await email_not_found()
-        
+        # Log
+        await log_channel.send(
+            f"✅ **New Premium Verified!**\nUser: <@{user_id}>\nEmail: `{email}`"
+        )
+
+        return {
+            "status": "new_premium",
+            "embed": await new_prem_embed(),
+            "is_new": True,
+            "is_old": False
+        }
+
+    # EMAIL EXISTS BUT NO SUBSCRIPTION
+    await Customer.update_or_create(
+        user_id=user_id,
+        defaults={"email": email}
+    )
+    await role_updates(bot, user_id)
+
+    return {
+        "status": "none",
+        "embed": await email_not_found(),
+        "is_old": False,
+        "is_new": False
+    }

@@ -3,7 +3,7 @@ from settings import logger
 from .routes.subscription_status_routes import router as exm_webhook
 
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 _bot = None 
 
 

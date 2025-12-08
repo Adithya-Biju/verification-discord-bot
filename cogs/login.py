@@ -6,16 +6,18 @@ from utility.constants import OWNER_ID
 class Login(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.bot.remove_command("help")
 
     @commands.command(name="create_login_panel")
     async def create_login_panel(self, ctx):
-        # Restrict to only YOU
+
         if ctx.author.id != OWNER_ID:
             return 
 
         embed = discord.Embed(
-            title="🔐 Link Your EXM Account",
-            description="Click below and enter your EXM email to link your subscription.",
+            title="🔐 Verify as a Premium Customer",
+            description='''Click below and enter the email you used to purchase EXM to instantly receive your Premium role, 
+unlocking priority support and all premium-exclusive benefits''',
             color=discord.Color.blurple()
         )
 

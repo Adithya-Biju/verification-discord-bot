@@ -15,10 +15,7 @@ class AutoMessages(commands.Cog):
                               1299740293892935720,
                               1195788286740922378,
                               1228620751935111240]
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-         print("Auto messages cog loaded")
+        self.bot.remove_command("help")
     
 
     @app_commands.command(name="refund",description="Automated response for refund prompt")

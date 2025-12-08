@@ -1,42 +1,63 @@
 from utility.payment import old_endpoint
 from models import CustomerOld, Customer
 from utility.server_roles import role_updates
-from utility.embed import email_not_found, new_prem_embed, old_prem_embed
+from utility.embed import email_not_found, existing_embed, old_prem_embed
 import discord 
+from utility import constants
 
 
-async def old_ver_validation(bot, user_id, email = None):
-
+async def old_ver_validation(bot, user_id, email=None):
     email_check = await CustomerOld.filter(email=email).first()
+    log_guild = bot.get_guild(constants.LOG_SERVER)
+    log_channel = log_guild.get_channel(constants.VERIFY_LOG)
 
-    #If email exists and is linked to someone else other than the user who used it 
-    if email_check and email_check.user_id != user_id: 
-        return discord.Embed(
-            title="EMAIL ADDRESS ALREADY REGISTERED",
-            color = 0x0000ff)
-        
-    #If user_id already exists in the db so that they dont get another gmail linked
-    if await CustomerOld.get_or_none(user_id=user_id): 
-        return await old_prem_embed()
+    # EMAIL TAKEN BY OTHER USER
+    if email_check and email_check.user_id != user_id:
+        return {
+            "status": "email_taken",
+            "embed": discord.Embed(title="EMAIL ADDRESS ALREADY REGISTERED", color=0x0000ff),
+            "is_old": False,
+            "is_new": False
+        }
 
-    #If email doesnt exists in the db we hit the endpoint
+    # ALREADY VERIFIED (old exists)
+    if await CustomerOld.get_or_none(user_id=user_id):
+        return {
+            "status": "already_verified",
+            "embed": await existing_embed(),
+            "is_old": True,
+            "is_new": False
+        }
+
+    # HIT API
     if await old_endpoint(email):
 
         await Customer.update_or_create(
-        user_id=user_id,
-        defaults={
-            "has_premium_old": True
-        }) 
+            user_id=user_id,
+            defaults={"has_premium_old": True}
+        )
 
         await CustomerOld.update_or_create(
-        user_id=user_id,
-        defaults={
-            "email": email
-        }) 
-        
+            user_id=user_id,
+            defaults={"email": email}
+        )
+
         await role_updates(bot, user_id)
-        return await new_prem_embed()
-    
-    else:
-        return await email_not_found()
-        
+
+        await log_channel.send(
+            f"✅ **Old Premium Verified!**\nUser: <@{user_id}>\nEmail: `{email}`"
+        )
+
+        return {
+            "status": "old_premium",
+            "embed": await old_prem_embed(),
+            "is_old": True,
+            "is_new": False
+        }
+
+    return {
+        "status": "none",
+        "embed": await email_not_found(),
+        "is_old": False,
+        "is_new": False
+    }

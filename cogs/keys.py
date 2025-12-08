@@ -5,111 +5,85 @@ import settings
 import asyncio
 from utility import key,constants
 from service import find_the_key
+from models import StoreKey
 
 class Keys(commands.Cog):
 
     def __init__(self,bot:commands.Bot):
 
         self.bot = bot
+        self.bot.remove_command("help")
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-         print("Keys cog loaded")
+    @app_commands.command(name='premium_key', description='Sends the premium key in DMs')
+    async def premium_key(self, interaction: discord.Interaction, member: discord.Member):
 
+        await interaction.response.defer(ephemeral=True)
 
-    @app_commands.command(name = 'premium_key',description='Sends the key to premium in DMS')
-    async def premium_key(self, interaction :discord.Interaction, member : discord.Member):
-        
+        log_guild = self.bot.get_guild(constants.LOG_SERVER)
+        log_channel = log_guild.get_channel(constants.KEY_LOG)
+
+        # Permission check
+        if not interaction.user.guild_permissions.administrator:
+            return await interaction.followup.send("You do not have permission.", ephemeral=True)
+
+        # Get a new key
+        generated_key = await key.premium_key()
+        if not generated_key:
+            return await interaction.followup.send("Key service is down.", ephemeral=True)
+
+        # Attempt to DM user
         try:
+            dm = await member.create_dm()
+            await dm.send(f"""**Your EXM PREMIUM Key:**
 
-            await interaction.response.defer(ephemeral=True)
+`{generated_key}`
 
-            self.prem_role = interaction.guild.get_role(constants.PREMIUM_ID)
-            self.log = interaction.guild.get_channel(constants.LOGGING_ID)
+This key is locked to one HWID.
+""")
 
-            if interaction.permissions.administrator == False:
-                await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
-            
-            else:
-                 
-                if self.prem_role in member.roles:
+            # Log success
+            await interaction.followup.send("Key sent successfully.", ephemeral=True)
 
-                    self.response = await key.premium_key()
+            # Log in staff-log channel
+            await asyncio.sleep(1)
+            await log_channel.send(
+                f"{member.mention} received a Premium key.\n"
+                f"**Key:** `{generated_key}`\n\n"
+                f"Issued by: {interaction.user.mention}"
+            )
 
-                    if self.response == False:
-                        
-                        await interaction.followup.send("Key authy is probably down",ephemeral=True)
-                    
-                    elif self.response != False:
+            # STORE INTO DATABASE
+            await StoreKey.create(
+                user_id=member.id,
+                key=generated_key,
+                mod_id=interaction.user.id,
+                mod_name=str(interaction.user),
+            )
 
-                        try:
-                            
-                            self.channel = await member.create_dm()
-                            await self.channel.send(f'''**Hello, here is your LICENSE KEY for EXM PREMIUM TWEAKS:**
-
-{self.response}
-
-note: you can only use this on one pc (HWID) 
-''')
-                            await interaction.followup.send("Key sent successfull",ephemeral=True)
-                            await asyncio.sleep(3)
-                            await self.log.send(f'''{member.mention} recieved a Premium key
-                                                
-{self.response}
-
-Operation performed by {interaction.user.mention}''')
-
-                        except discord.errors.Forbidden as e:
-                            await interaction.followup.send("DMS are closed",ephemeral=True)
-
-                    else:
-                        
-                        await interaction.followup.send("Error",ephemeral=True)
-                
-                else:
-
-                    await interaction.followup.send("User doesn't have the premium role",ephemeral=True)
+        except discord.Forbidden:
+            await interaction.followup.send("User's DMs are closed.", ephemeral=True)
 
         except Exception as e:
-            print(f"Unexpected Error: {e}")
-            await interaction.followup.send("An unexpected error occurred. Try again ", ephemeral=True)
+            print("Error:", e)
+            await interaction.followup.send("Unexpected error occurred.", ephemeral=True)
 
-    @app_commands.command(name = 'missing_key',description='Check the users keys')
-    async def missing_key(self, interaction :discord.Interaction, member : discord.Member = None):
 
-        try:
-            await interaction.response.defer(ephemeral=True)
+   
+    @app_commands.command(name='missing_key', description='Check stored keys')
+    async def missing_key(self, interaction: discord.Interaction, member: discord.Member = None):
 
-            if member is None:
+        await interaction.response.defer(ephemeral=True)
 
-                key_record = await find_the_key(interaction.user.id)
-                
-                await interaction.followup.send(key_record)
-            
-            elif member.id == interaction.user.id:
+        target = member or interaction.user
 
-                key_record = await find_the_key(member.id)
-                
-                await interaction.followup.send(key_record)
+        if member and not interaction.user.guild_permissions.administrator:
+            return await interaction.followup.send("You cannot check another user's keys.", ephemeral=True)
 
-            elif member.id != interaction.user.id:
+        key_record = await find_the_key(target.id)
+        await interaction.followup.send(key_record, ephemeral=True)
 
-                if interaction.permissions.administrator == False:
-                    await interaction.followup.send("You Do Not Have the Adequate Permissions For This Command",ephemeral=True)
-                
-                else:
-                    key_record = await find_the_key(member.id)
-                    
-                    await interaction.followup.send(key_record)
-            
-            else:
-
-                await interaction.followup.send("Missing key command missing condition")
-
-        except:
-            await interaction.followup.send("Missing key command crashed ", ephemeral=True)
 
 
 async def setup(bot):
-        await bot.add_cog(Keys(bot),guilds = [discord.Object(id=settings.GUILD_ID)])
+        await bot.add_cog(Keys(bot))
                                                   

@@ -1,14 +1,14 @@
 import discord
 from ..verify_service import validation 
 
-class EmailModal(discord.ui.Modal, title="EXM 1.3 Login"):
+class EmailModal(discord.ui.Modal, title="EXM Premium Verification"):
     def __init__(self, bot, interaction):
         super().__init__(timeout=None)
         self.bot = bot
         self.interaction = interaction
 
         self.email = discord.ui.TextInput(
-            label="Enter your email",
+            label="Enter your EXM account email",
             placeholder="you@example.com",
             required=True,
             style=discord.TextStyle.short,
