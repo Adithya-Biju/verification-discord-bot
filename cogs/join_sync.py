@@ -18,7 +18,7 @@ class JoinSync(commands.Cog):
         if not customer:
             return
         
-        await enqueue(self.bot, member.id)
+        await enqueue(member.id)
 
 
 

@@ -21,7 +21,7 @@ async def old_endpoint(email):
 
 async def new_endpoint(email):
 
-    url = f"https://exmtest.fancystudio.sk/api/subscription/status?email={email}"
+    url = f"{settings.API_BASE}/subscription/status?email={email}"
 
     headers = {
             "X-API-Key": settings.X_API_KEY
