@@ -1,5 +1,5 @@
 from models import Customer
-from utility.server_roles import role_updates
+from utility.update_queue import enqueue
 
 #   WEBHOOK HANDLER
 async def handle_subscription(bot, email, subscription_list):
@@ -20,7 +20,7 @@ async def handle_subscription(bot, email, subscription_list):
         customer.has_premium_new = False
         await customer.save()
 
-        await role_updates(bot, user_id)
+        await enqueue(user_id)
         return
 
 
@@ -31,7 +31,7 @@ async def handle_subscription(bot, email, subscription_list):
         customer.has_premium_new = True
         await customer.save()
 
-    await role_updates(bot, user_id)
+    await enqueue(user_id)
 
 
 #   USER DELETED 
@@ -57,4 +57,4 @@ async def handle_user_deleted(bot, email):
     customer.has_premium_new = False
     await customer.save()
 
-    await role_updates(bot, user_id)
+    await enqueue(user_id)

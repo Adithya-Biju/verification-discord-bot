@@ -32,8 +32,6 @@ async def exm_webhook(
     # EVENT: subscription-updated
     if event == "subscription-updated":
         subscription_list = payload.get("subscriptions", [])
-        print(subscription_list)
-
         await handle_subscription(_bot, email, subscription_list)
         return {"success": True}
 

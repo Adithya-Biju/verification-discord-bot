@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from models import Customer
-from utility.server_roles import role_updates
+from utility.update_queue import enqueue
 
 
 class JoinSync(commands.Cog):
@@ -18,7 +18,7 @@ class JoinSync(commands.Cog):
         if not customer:
             return
         
-        await role_updates(self.bot, member.id)
+        await enqueue(self.bot, member.id)
 
 
 

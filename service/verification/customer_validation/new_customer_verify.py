@@ -1,6 +1,6 @@
 from utility.payment import new_endpoint
 from models import Customer
-from utility.server_roles import role_updates
+from utility.update_queue import enqueue
 from utility.embed import email_not_found, new_prem_embed, existing_embed
 import discord 
 from utility import constants
@@ -46,7 +46,7 @@ async def new_ver_validation(bot, user_id, email=None):
             user_id=user_id,
             defaults={"has_premium_new": True, "email": email}
         )
-        await role_updates(bot, user_id)
+        await enqueue(user_id)
 
         # Log
         await log_channel.send(
@@ -65,7 +65,7 @@ async def new_ver_validation(bot, user_id, email=None):
         user_id=user_id,
         defaults={"email": email}
     )
-    await role_updates(bot, user_id)
+    await enqueue(user_id)
 
     return {
         "status": "none",

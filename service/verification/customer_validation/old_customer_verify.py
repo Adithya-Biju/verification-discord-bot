@@ -1,6 +1,6 @@
 from utility.payment import old_endpoint
 from models import CustomerOld, Customer
-from utility.server_roles import role_updates
+from utility.update_queue import enqueue
 from utility.embed import email_not_found, existing_embed, old_prem_embed
 import discord 
 from utility import constants
@@ -42,7 +42,8 @@ async def old_ver_validation(bot, user_id, email=None):
             defaults={"email": email}
         )
 
-        await role_updates(bot, user_id)
+        await enqueue(user_id)
+
 
         await log_channel.send(
             f"✅ **Old Premium Verified!**\nUser: <@{user_id}>\nEmail: `{email}`"

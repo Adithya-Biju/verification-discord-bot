@@ -1,13 +1,22 @@
 from models import Server, Customer
 import discord
-from settings import logging
 import asyncio
 from utility import constants
 
 
 async def role_updates(bot: discord.Client, user_id: int):
-
+    
     log_guild = bot.get_guild(constants.LOG_SERVER)
+
+    if not log_guild:
+        try:
+            log_guild = await bot.fetch_guild(constants.LOG_SERVER)
+        except discord.NotFound:
+            print(f"[ERROR] Guild {constants.LOG_SERVER} not found.")
+            return
+        except discord.Forbidden:
+            print(f"[ERROR] Bot doesn't have permission to access the guild {constants.LOG_SERVER}.")
+            return
     log_channel = log_guild.get_channel(constants.ROLE_LOG)
 
     server_details = await Server.all().values("server_id","old_role_id", "new_role_id","main_premium_role")
