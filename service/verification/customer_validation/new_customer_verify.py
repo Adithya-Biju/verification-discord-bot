@@ -5,7 +5,7 @@ from utility.embed import email_not_found, new_prem_embed, existing_embed
 import discord 
 from utility import constants
 
-async def new_ver_validation(bot, user_id, email=None):
+async def new_ver_validation(bot, user_id, username, email=None):
     email_check = await Customer.filter(email=email).first()
     log_guild = bot.get_guild(constants.LOG_SERVER)
     log_channel = log_guild.get_channel(constants.VERIFY_LOG)
@@ -50,7 +50,7 @@ async def new_ver_validation(bot, user_id, email=None):
 
         # Log
         await log_channel.send(
-            f"✅ **New Premium Verified!**\nUser: <@{user_id}>\nEmail: `{email}`"
+            f"✅ **New Premium Verified!**\nUser: {username} : {user_id}\nEmail: `{email}`"
         )
 
         return {

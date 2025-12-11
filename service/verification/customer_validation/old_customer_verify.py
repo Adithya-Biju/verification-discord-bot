@@ -6,7 +6,7 @@ import discord
 from utility import constants
 
 
-async def old_ver_validation(bot, user_id, email=None):
+async def old_ver_validation(bot, user_id, username, email=None):
     email_check = await CustomerOld.filter(email=email).first()
     log_guild = bot.get_guild(constants.LOG_SERVER)
     log_channel = log_guild.get_channel(constants.VERIFY_LOG)
@@ -46,7 +46,7 @@ async def old_ver_validation(bot, user_id, email=None):
 
 
         await log_channel.send(
-            f"✅ **Old Premium Verified!**\nUser: <@{user_id}>\nEmail: `{email}`"
+            f"✅ **Old Premium Verified!**\nUser: {username} : {user_id}\nEmail: `{email}`"
         )
 
         return {

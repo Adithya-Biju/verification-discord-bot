@@ -2,10 +2,10 @@ from .customer_validation.old_customer_verify import old_ver_validation
 from .customer_validation.new_customer_verify import new_ver_validation
 import discord
 
-async def validation(bot, interaction, user_id, email=None):
+async def validation(bot, interaction, user_id, username, email=None):
 
-    new_res = await new_ver_validation(bot, user_id, email)
-    old_res = await old_ver_validation(bot, user_id, email)
+    new_res = await new_ver_validation(bot, user_id, username, email)
+    old_res = await old_ver_validation(bot, user_id, username, email)
 
     # If BOTH return email taken → send email taken
     if new_res["status"] == "email_taken" and old_res["status"] == "email_taken":

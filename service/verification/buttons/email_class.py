@@ -19,4 +19,4 @@ class EmailModal(discord.ui.Modal, title="EXM Premium Verification"):
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
 
-        await validation(self.bot, interaction, interaction.user.id, self.email.value)
+        await validation(self.bot, interaction, interaction.user.id, interaction.user.name, self.email.value)
