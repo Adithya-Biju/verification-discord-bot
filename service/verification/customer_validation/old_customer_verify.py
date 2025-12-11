@@ -46,7 +46,7 @@ async def old_ver_validation(bot, user_id, interaction, email=None):
 
 
         await log_channel.send(
-            f"✅ **Old Premium Verified!**\nUser: {interaction.user.mention} : {user_id}\nEmail: `{email}`"
+            f"✅ **Old Premium Verified!**\nUser: {interaction.user.mention}\nEmail: `{email}`"
         )
 
         return {

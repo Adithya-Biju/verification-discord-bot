@@ -50,7 +50,7 @@ async def new_ver_validation(bot, user_id, interaction, email=None):
 
         # Log
         await log_channel.send(
-            f"✅ **New Premium Verified!**\nUser: {interaction.user.mention} : {user_id}\nEmail: `{email}`"
+            f"✅ **New Premium Verified!**\nUser: {interaction.user.mention}\nEmail: `{email}`"
         )
 
         return {
