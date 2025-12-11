@@ -47,31 +47,31 @@ async def role_updates(bot: discord.Client, user_id: int):
                 if user_details["has_premium_old"]:
                     if old_role and old_role not in member.roles:
                         await member.add_roles(old_role, reason="EXM 1.3 verification completed")
-                        await log_channel.send(f"🟢 Added **OLD Premium** to <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🟢 Added **OLD Premium** to {user_id} in **{guild.name}**")
                 else:
                     if old_role and old_role in member.roles:
                         await member.remove_roles(old_role, reason="EXM 1.3 premium removed")
-                        await log_channel.send(f"🔴 Removed **OLD Premium** from <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🔴 Removed **OLD Premium** from {user_id} in **{guild.name}**")
 
                 # NEW PREMIUM ROLE
                 if user_details["has_premium_new"]:
                     if new_role and new_role not in member.roles:
                         await member.add_roles(new_role, reason="EXM 2.0 subscription active")
-                        await log_channel.send(f"🟢 Added **NEW Premium** to <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🟢 Added **NEW Premium** to {user_id} in **{guild.name}**")
                 else:
                     if new_role and new_role in member.roles:
                         await member.remove_roles(new_role, reason="EXM 2.0 premium removed")
-                        await log_channel.send(f"🔴 Removed **NEW Premium** from <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🔴 Removed **NEW Premium** from {user_id} in **{guild.name}**")
 
                 # MAIN PREMIUM ROLE
                 if user_details["has_premium_old"] or user_details["has_premium_new"]:
                     if main_role and main_role not in member.roles:
                         await member.add_roles(main_role, reason="EXM premium active")
-                        await log_channel.send(f"🟢 Added **MAIN Premium** to <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🟢 Added **MAIN Premium** to {user_id} in **{guild.name}**")
                 else:
                     if main_role and main_role in member.roles:
                         await member.remove_roles(main_role, reason="No EXM premium active")
-                        await log_channel.send(f"🔴 Removed **MAIN Premium** from <@{user_id}> in **{guild.name}**")
+                        await log_channel.send(f"🔴 Removed **MAIN Premium** from {user_id} in **{guild.name}**")
 
             except discord.HTTPException as e:
                 print(f"HTTP error updating roles for {member} in {guild.name}: {e}")

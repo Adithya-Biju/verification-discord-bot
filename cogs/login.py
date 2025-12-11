@@ -16,8 +16,7 @@ class Login(commands.Cog):
 
         embed = discord.Embed(
             title="🔐 Verify as a Premium Customer",
-            description='''Click below and enter the email you used to purchase EXM to instantly receive your Premium role, 
-unlocking priority support and all premium-exclusive benefits''',
+            description='''Click below and enter the email you used to purchase EXM to instantly receive your Premium role, unlocking priority support and all premium-exclusive benefits''',
             color=discord.Color.blurple()
         )
 

@@ -47,7 +47,7 @@ This key is locked to one HWID.
             # Log in staff-log channel
             await asyncio.sleep(1)
             await log_channel.send(
-                f"{member.mention} received a Premium key.\n"
+                f"{member.name} : {member.id} received a Premium key.\n"
                 f"**Key:** `{generated_key}`\n\n"
                 f"Issued by: {interaction.user.mention}"
             )
