@@ -4,8 +4,8 @@ import discord
 
 async def validation(bot, interaction, user_id, username, email=None):
 
-    new_res = await new_ver_validation(bot, user_id, username, email)
-    old_res = await old_ver_validation(bot, user_id, username, email)
+    new_res = await new_ver_validation(bot, user_id, interaction, email)
+    old_res = await old_ver_validation(bot, user_id, interaction, email)
 
     # If BOTH return email taken → send email taken
     if new_res["status"] == "email_taken" and old_res["status"] == "email_taken":
