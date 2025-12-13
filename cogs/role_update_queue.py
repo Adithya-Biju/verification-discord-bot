@@ -21,17 +21,8 @@ class RoleUpdates(commands.Cog):
         if pending_update:
             user_id = pending_update.user_id
 
-            
-            customer = await Customer.get_or_none(user_id=user_id)
-
-            if customer:
-                
-                await role_updates(self.bot, user_id)
-
-                await pending_update.delete()
-
-            else:
-                await pending_update.delete()
+            await role_updates(self.bot, user_id)
+            await pending_update.delete()
 
         else:
             return 
