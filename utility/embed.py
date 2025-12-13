@@ -48,7 +48,7 @@ async def email_not_found():
             title="Your email address was not found",
             color = 0x0000ff,
             description=f'''
-If you bought premium, open a purchase/billing https://discord.com/channels/1196563515926909008/1303435489302286397 and give us proof of purchase '''
+If you bought premium,  Open a verification ticket https://discord.com/channels/1196563515926909008/1303435489302286397 and give us proof of purchase '''
 )
         return embed 
 
