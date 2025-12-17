@@ -1,6 +1,14 @@
 import discord
 from discord.ext import commands
 
+async def both_prem_embed():
+        embed = discord.Embed(
+            title="Hello, you have been verified as a premium customer and granted access to priority support & other benefits",
+            color = 0x0000ff,
+            description=f'''Have an amazing rest of your day! ❤️'''
+)
+        return embed
+
 async def old_prem_embed():
         embed = discord.Embed(
             title="Hello, you have been verified as a premium customer (legacy) and granted access to priority support & other benefits",
@@ -23,6 +31,13 @@ async def existing_embed():
             title="Hello, you already are verified in the discord server",
             color = 0x0000ff,
             description=f'''If you think there is an error, please open a ticket in https://discord.com/channels/1196563515926909008/1303435489302286397'''
+)
+        return embed
+
+async def email_taken_embed():
+        embed = discord.Embed(
+            title="EMAIL ADDRESS ALREADY REGISTERED",
+            color = 0x0000ff
 )
         return embed
 

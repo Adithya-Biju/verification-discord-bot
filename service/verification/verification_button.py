@@ -12,5 +12,5 @@ class LoginView(discord.ui.View):
         custom_id="login_email_button"
     )
     async def enter_email(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(EmailModal(self.bot,interaction))
+        await interaction.response.send_modal(EmailModal(self.bot))
     
