@@ -21,6 +21,5 @@ class JoinSync(commands.Cog):
         await enqueue(member.id)
 
 
-
 async def setup(bot):
     await bot.add_cog(JoinSync(bot))

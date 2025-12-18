@@ -11,16 +11,19 @@ class SyncRoles(commands.Cog):
 
     @app_commands.checks.cooldown(1, 10.0)
     @app_commands.command(name="sync", description="Sync your EXM Premium roles")
-    async def sync(self, interaction: discord.Interaction):
-
+    async def sync(self, interaction: discord.Interaction, member: discord.Member = None):
         await interaction.response.defer(ephemeral=True)
 
-        await sync_roles(self.bot, interaction.user.id)
+        target = member or interaction.user
 
-        await interaction.followup.send(
-            "✅ Your EXM roles have been synced successfully.",
-            ephemeral=True
-        )
+        if member and member != interaction.user and not interaction.user.guild_permissions.administrator:
+            return await interaction.followup.send("You do not have permission to sync other users.", ephemeral=True)
+        
+        await sync_roles(self.bot, target.id)
+
+        msg = "Your roles have been synced." if target == interaction.user else f"Roles for {target.display_name} have been synced."
+        
+        await interaction.followup.send(f"✅ {msg}", ephemeral=True)
     
     @sync.error
     async def sync_error(self, interaction: discord.Interaction, error):

@@ -76,7 +76,7 @@ This key is locked to one HWID.
 
         target = member or interaction.user
 
-        if member and not interaction.user.guild_permissions.administrator:
+        if member and member != interaction.user and not interaction.user.guild_permissions.administrator:
             return await interaction.followup.send("You cannot check another user's keys.", ephemeral=True)
 
         key_record = await find_the_key(target.id)
