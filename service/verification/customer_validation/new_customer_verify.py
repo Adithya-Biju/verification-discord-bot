@@ -31,7 +31,7 @@ async def new_ver_validation(user_id: int, email: str | None = None):
         }
 
     # NEW PREMIUM ACTIVE
-    if data.get("subscription"):
+    if data.get("subscriptions"):
         await Customer.update_or_create(
             user_id=user_id,
             defaults={
