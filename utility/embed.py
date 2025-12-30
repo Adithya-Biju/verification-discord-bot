@@ -84,9 +84,7 @@ async def refund_embed():
         embed = discord.Embed(
                 title = "Refund",
                 color = 0x0000ff,
-                description= '''In order to get a refund, you will have to send a minute-long screen recording of the game of your choice with your FPS displayed and ``alt + tab`` to show your Task Manager right now with the tweaks applied. Additionally, you will have to do a `CapFrameX` benchmark and provide us with the results. Then, use the system restore point you created before applying the tweaks to revert to the state your PC was at before the tweaks were applied. Do the same minute-long screen recording with your FPS displayed and ``alt + tab`` to show your Task Manager as well. Again, do a `CapFrameX` benchmark and provide us with the results. Due to the nature of the product, we require proof of any issues occuring since the refund policy can be very easily abused.
-
-How to benchmark with `CapFrameX`: https://youtu.be/W7yINXWty90
+                description= '''This is our [refund policy](https://www.exmtweaks.com/refund-policy). You can only request a refund if your EXM 2.0 purchase is at least a yearly subscription or a lifetime subscription. Please make sure you have done all the steps and wait patiently once you have sent them.  If you want to cancel your subscription, you can do it in [Billing](https://exmtweaks.com/account?tab=billing)
 '''
         )
         return embed
