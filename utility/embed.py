@@ -1,35 +1,43 @@
 import discord
 from discord.ext import commands
 
-async def new_prem_embed(download,review):
+async def both_prem_embed():
         embed = discord.Embed(
-            title="Hello, Thank you for purchasing our product",
+            title="Hello, you have been verified as a premium customer and granted access to priority support & other benefits",
             color = 0x0000ff,
-            description=f'''You can download it in this channel: <#{download}>
-
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
+            description=f'''Have an amazing rest of your day! ❤️'''
 )
         return embed
 
-async def old_prem_embed(download,review):
+async def old_prem_embed():
         embed = discord.Embed(
-            title="Hello, Thanks for being an amazing customer",
+            title="Hello, you have been verified as a premium customer (legacy) and granted access to priority support & other benefits",
             color = 0x0000ff,
-            description=f'''• You can download it in this channel: <#{download}>
-• You can find your license key in dms
+            description=f'''Have an amazing rest of your day! ❤️'''
+)
+        return embed
 
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
+async def new_prem_embed():
+        embed = discord.Embed(
+            title="Hello, you have been verified as a premium customer and granted access to priority support & other benefits. After your subscribtion ends you will lose access",
+            color = 0x0000ff,
+            description=f'''Have an amazing rest of your day! ❤️'''
 )
         return embed
 
 
-async def stan_embed(download,review):
+async def existing_embed():
         embed = discord.Embed(
-            title="Hello, Thank you for purchasing our product",
+            title="Hello, you already are verified in the discord server",
             color = 0x0000ff,
-            description=f'''You can download it in this channel: <#{download}>
+            description=f'''If you think there is an error, please open a ticket in https://discord.com/channels/1196563515926909008/1303435489302286397'''
+)
+        return embed
 
-**make sure to write a review after using**. Have an amazing rest of your day! ❤️ <#{review}>'''
+async def email_taken_embed():
+        embed = discord.Embed(
+            title="EMAIL ADDRESS ALREADY REGISTERED",
+            color = 0x0000ff
 )
         return embed
 
@@ -52,27 +60,121 @@ async def dms_failed():
 
 async def email_not_found():
         embed = discord.Embed(
-            title="EMAIL ADDRESS NOT FOUND",
+            title="Your email address was not found",
             color = 0x0000ff,
-            description=f'''If you bought the tweaks, do this:
-
-1. Open a ticket by typing /open
-
-2. Put in proof of purchase (IE: receipt)
-
-**Me or my admins will take care of it (note: it may take up to 24 hours)**'''
+            description=f'''
+If you bought premium,  Open a verification ticket https://discord.com/channels/1196563515926909008/1303435489302286397 and give us proof of purchase '''
 )
         return embed 
 
 
-async def faq():
+async def ticket():
         embed = discord.Embed(
-                title = "EXM FAQ DESK",
+                title = "EXM TICKET DESK",
                 color = 0x0000ff,
-                description= '''Welcome to EXM's FAQ Desk!
-It is a channel for frequently asked questions; you will easily find an answer to common questions regarding Tweaking Utiltiy!
+                description= '''Welcome to EXM's ticket Desk!
+It is a channel to create ticket;
 
-By selecting a question using the below dropdown, you will receive an answer to that question.'''
+By selecting a question using the below dropdown, you will open ticket.'''
         )
         return embed
 
+
+async def refund_embed():
+        embed = discord.Embed(
+                title = "Refund",
+                color = 0x0000ff,
+                description= '''This is our [refund policy](https://www.exmtweaks.com/refund-policy). You can only request a refund if your EXM 2.0 purchase is at least a yearly subscription or a lifetime subscription. Please make sure you have done all the steps and wait patiently once you have sent them.  If you want to cancel your subscription, you can do it in [Billing](https://exmtweaks.com/account?tab=billing)
+'''
+        )
+        return embed
+
+
+async def reinstallnousb_embed():
+        embed = discord.Embed(
+                title = "Reinstall No USB",
+                color = 0x0000ff,
+                description= '''https://www.youtube.com/watch?v=A3Ig7utyaPo'''
+        )
+        return embed
+
+
+async def reinstallusb_embed():
+        embed = discord.Embed(
+                title = "Reinstall USB",
+                color = 0x0000ff,
+                description= '''https://www.youtube.com/watch?v=6K_Fw16vVqc'''
+        )
+        return embed
+        
+
+async def reinstallusb_embed():
+        embed = discord.Embed(
+                title = "Reinstall USB",
+                color = 0x0000ff,
+                description= '''https://www.youtube.com/watch?v=6K_Fw16vVqc'''
+        )
+        return embed
+
+
+async def hwid_embed(option : int):
+        if option == 1:
+                embed = discord.Embed(
+                        color = 0x0000ff,
+                        description= '''please do this:
+
+1. Open the Start menu, type in 'cmd', and hit Enter.
+2. In the command prompt window, paste the following command: 'wmic baseboard get serialnumber' and press Enter.
+3. Copy the number that popped up and send it here plus take screenshot of it.
+''')
+        
+        else:
+               embed = discord.Embed(
+                        color = 0x0000ff,
+                        description= '''please do this:
+
+1. Open the Start menu by pressing the windows key on your keyboard, type in 'powershell' and find "Powershell" and click "Run as administrator".
+2. Paste the following command into the powershell window that popped up: Get-WmiObject Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
+3. Copy the number that popped up and send it here plus take screenshot of it.
+4. If the previous command doesn't work, please use: Get-CimInstance Win32_BaseBoard | Select-Object -ExpandProperty SerialNumber
+''')
+                
+        return embed
+
+
+async def checktemp_embed():
+        embed = discord.Embed(
+                color = 0x0000ff,
+                description= '''Download hwinfo64, install it, open the app and tick the "sensors-only" option here and click start. Then scroll down till you see CPU and GPU temperature and make screenshot of the app as shown on the picture.'''
+        )
+        embed.set_image(url=f"https://cdn.discordapp.com/attachments/1341271867310477343/1343159891384209459/hwinfo.png?ex=67bc42a0&is=67baf120&hm=a3461375c48f777492c422a65ecb977c311315ff31c539ed7d9d2baa971e33dc&")
+        return embed
+
+
+async def keynotworking_embed():
+        embed = discord.Embed(
+                color = 0x0000ff,
+                description= '''Keys don’t randomly stop working. They typically stop working if you've switched or spoofed a PC component (such as the motherboard) or if you've switched to a different PC than the one where the key was initially activated. Or, if you haven’t used your key in a long time; you might have bought before the key reset. Please provide proof of your receipt and your receipt on the site.'''
+        )
+        return embed
+
+
+async def rp_embed():
+        embed = discord.Embed(
+                color = 0x0000ff,
+                description= '''To use an restore point follow the guide below:
+
+1. Press win + r 
+2. Type "rstrui.exe" and hit enter
+3. Select the restore point you want to use and click next
+'''
+        )
+        return embed
+
+
+async def laptop_embed():
+        embed = discord.Embed(
+                color = 0x0000ff,
+                description= '''Just hover over each button to get a little description of what each tweak does. I'd recommend only applying the ones that appeal to YOU. If your system has poor cooling, I'd suggest NOT applying the CPU, GPU, and power tweaks. Also, be aware that the BIOS tweaks can cause issues for some people. Additionally, you should stay away from the red buttons unless you are ABSOLUTELY sure you want to apply those tweaks. If you don't trust yourself with applying the tweaks, you can open a ticket and an available staff member can connect to your PC via AnyDesk and apply them for you. Some do it for ~$5, while others do it for free.'''
+        )
+        return embed
