@@ -31,22 +31,22 @@ class Main(commands.Bot):
 
         await Tortoise.init(db_url=settings.POSTGRES, modules={"models": models})
         await Tortoise.generate_schemas()
-        print("🗄️ Database connected and schemas ready.")
+        print("Database connected and schemas ready.")
 
         # Load all cogs
         for cog_file in settings.COGS_DIR.glob("*.py"):
             if cog_file.name != "__init__.py":
                 try:
                     await self.load_extension(f"cogs.{cog_file.name[:-3]}")
-                    print(f"⚙️ Loaded cog: {cog_file.name[:-3]}")
+                    print(f"Loaded cog: {cog_file.name[:-3]}")
                 except Exception as e:
-                    print(f"❌ Error loading cog {cog_file.name}: {e}")
+                    print(f"Error loading cog {cog_file.name}: {e}")
         
         set_bot(self)
 
     # ------------------------------------------------------------
     async def on_ready(self):
-        print(f"🤖 Logged in as {self.user} (ID: {self.user.id})")
+        print(f"Logged in as {self.user} (ID: {self.user.id})")
         self.add_view(LoginView(self))
         await self.sync_commands_per_guild()
 
@@ -55,19 +55,19 @@ class Main(commands.Bot):
         """Sync slash commands for all servers in DB."""
         try:
             servers = await Server.all().values_list("server_id", flat=True)
-            print(f"📡 Found {len(servers)} servers in DB")
+            print(f"Found {len(servers)} servers in DB")
 
             for sid in servers:
                 try:
                     guild = discord.Object(id=sid)
                     self.tree.copy_global_to(guild=guild)
                     await self.tree.sync(guild=guild)
-                    print(f"🔄 Synced commands for guild: {sid}")
+                    print(f"Synced commands for guild: {sid}")
                     await asyncio.sleep(1)
                 except Exception as e:
-                    print(f"⚠️ Error syncing guild {sid}: {e}")
+                    print(f"Error syncing guild {sid}: {e}")
         except Exception as e:
-            print(f"❌ Database sync error: {e}")
+            print(f"Database sync error: {e}")
 
 
 # ------------------------------------------------------------
