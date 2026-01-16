@@ -2,7 +2,7 @@ from models import Customer
 from utility.update_queue import enqueue
 
 #   WEBHOOK HANDLER
-async def handle_subscription(bot, email, subscription_list):
+async def handle_subscription(email, subscription_list):
 
     customer = await Customer.get_or_none(email=email)
 
@@ -35,7 +35,7 @@ async def handle_subscription(bot, email, subscription_list):
 
 
 #   USER DELETED 
-async def handle_user_deleted(bot, email):
+async def handle_user_deleted(email):
     """
     When EXM deletes a user account:
         - Remove their email

@@ -22,6 +22,8 @@ GUILD_ID = os.getenv("GUILD_ID")
 LOGGING_ID = os.getenv("LOGGING_ID")
 POSTGRES = os.getenv("POSTGRES")
 MONGO_DB_SOFTWARE = os.getenv("MONGO_DB_SOFTWARE")
+CORS_TEST = os.getenv("CORS_TEST")
+CORS_PROD = os.getenv("CORS_PROD")
 
 BASE_DIR = pathlib.Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"

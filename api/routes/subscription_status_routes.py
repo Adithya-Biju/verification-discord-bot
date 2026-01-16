@@ -14,8 +14,6 @@ async def exm_webhook(
 ):
     """EXM → Discord Bot Webhook (2.0 only)."""
 
-    from api.main import _bot
-
     # Validate secret key
     if x_exm_key != EXM_WEBHOOK_SECRET:
         raise HTTPException(401, "Unauthorized")
@@ -32,12 +30,12 @@ async def exm_webhook(
     # EVENT: subscription-updated
     if event == "subscription-updated":
         subscription_list = payload.get("subscriptions", [])
-        await handle_subscription(_bot, email, subscription_list)
+        await handle_subscription(email, subscription_list)
         return {"success": True}
 
     # EVENT: user-deleted
     if event == "user-deleted":
-        await handle_user_deleted(_bot, email)
+        await handle_user_deleted(email)
         return {"success": True}
     
 

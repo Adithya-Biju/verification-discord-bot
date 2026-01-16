@@ -6,7 +6,7 @@ from models.server_model import Server
 import settings
 import uvicorn
 from service import LoginView
-from api.main import app, set_bot
+from api.main import app
 
 
 
@@ -42,7 +42,6 @@ class Main(commands.Bot):
                 except Exception as e:
                     print(f"Error loading cog {cog_file.name}: {e}")
         
-        set_bot(self)
 
     # ------------------------------------------------------------
     async def on_ready(self):
