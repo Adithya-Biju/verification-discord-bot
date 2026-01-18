@@ -4,22 +4,13 @@ from utility import constants
 
 class UpdationModal(discord.ui.Modal):
 
-    def __init__(self, bot : discord.Client, current_data,timeout = 300):
-        super().__init__(title=f"Update {current_data["user_id"]}",timeout=timeout)
-        self.data = current_data
-        log_guild = bot.get_guild(constants.LOG_SERVER)
-
-        if not log_guild:
-            try:
-                log_guild = bot.fetch_guild(constants.LOG_SERVER)
-            except discord.NotFound:
-                print(f"[ERROR] Guild {constants.LOG_SERVER} not found.")
-                return
-            except discord.Forbidden:
-                print(f"[ERROR] Bot doesn't have permission to access the guild {constants.LOG_SERVER}.")
-                return
-        self.log_channel = log_guild.get_channel(constants.TRANSFER_LOG)
+    def __init__(self, bot : discord.Client, current_data,status,message,timeout = 300):
+        super().__init__(title=f"Update {current_data['user_id']}",timeout=timeout)
         self.bot = bot
+        self.status = status 
+        self.message = message
+        self.update_payload = None
+        self.data = current_data
 
         self.user_id_field = discord.ui.TextInput(
             label="User ID",
@@ -70,45 +61,62 @@ class UpdationModal(discord.ui.Modal):
 
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
 
-        def to_bool(s:str) -> bool:
-            return s.lower() == "true"
+        try:
+            await interaction.response.defer(ephemeral=True)
 
-        update_payload = {
-            "user_id" : int(self.user_id_field.value),
-            "has_premium_old" : to_bool(self.old_premium_flag_field.value),
-            "has_premium_new" : to_bool(self.new_premium_flag_field.value)
-        }
+            def to_bool(s:str) -> bool:
+                return s.lower() == "true"
 
-        if hasattr(self,'old_prem_email_field'):
-            update_payload["old_email"] = self.old_prem_email_field.value
-        else:
-            update_payload["old_email"] = None
+            self.update_payload = {
+                "user_id" : int(self.user_id_field.value),
+                "has_premium_old" : to_bool(self.old_premium_flag_field.value),
+                "has_premium_new" : to_bool(self.new_premium_flag_field.value)
+            }
+
+            if hasattr(self,'old_prem_email_field'):
+                self.update_payload["old_email"] = self.old_prem_email_field.value
+            else:
+                self.update_payload["old_email"] = None
+            
+            if hasattr(self,'new_prem_email_field'):
+                self.update_payload["new_email"] = self.new_prem_email_field.value
+            else:
+                self.update_payload["new_email"] = None
+
+            response = await update_premium(self.data,self.update_payload)
+
+            if response['success'] == False:
+                self.status = False 
+                self.message = response["error"]
+            else:
+                self.status = True
+                self.message = "Updated Successfully"
+
+            self.stop()
+
+        except Exception as e:
+            print(e)
+            self.status = False
+            self.message = "Unexpected Error occured"
         
-        if hasattr(self,'new_prem_email_field'):
-            update_payload["new_email"] = self.new_prem_email_field.value
-        else:
-            update_payload["new_email"] = None
 
 
-        response = await update_premium(self.data,update_payload)
+class UpdationTriggerView(discord.ui.View):
+    def __init__(self,bot,current_data):
+        super().__init__(timeout=60)
+        self.bot = bot
+        self.current_data = current_data
+        self.status = None 
+        self.message = None 
+        self.update_payload = None 
 
-        if response['success'] == False:
-            await self.log_channel.send(
-                f"🔴 **PREMIUM UPDATION FAILED**\n"
-                f"Attempted on : {self.data}\n"
-                f"Updation attempt: {update_payload}\n"
-                f"Failing reason : {response['error']}\n"
-                f"Attempted by: {interaction.user.mention}"
-            )
-            await interaction.followup.send(response['error'],ephemeral=True)
-        else:
-            await self.log_channel.send(
-                f"🟢 **PREMIUM UPDATION SUCCESS**\n"
-                f"Old data : {self.data}\n"
-                f"Updated data: {update_payload}\n"
-                f"Attempted by: {interaction.user.mention}"
-            )
-            await interaction.followup.send("Updated successfully", ephemeral=True)
-        
+    @discord.ui.button(label="Open Updation Form", style=discord.ButtonStyle.blurple)
+    async def open_update_modal(self, interaction: discord.Interaction, button: discord.ui.Button):
+        modal = UpdationModal(self.bot,self.current_data,self.status,self.message)
+        await interaction.response.send_modal(modal)
+        await modal.wait()
+        self.status = modal.status
+        self.message = modal.message
+        self.update_payload = modal.update_payload
+        self.stop()

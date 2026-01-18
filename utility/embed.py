@@ -178,3 +178,19 @@ async def laptop_embed():
                 description= '''Just hover over each button to get a little description of what each tweak does. I'd recommend only applying the ones that appeal to YOU. If your system has poor cooling, I'd suggest NOT applying the CPU, GPU, and power tweaks. Also, be aware that the BIOS tweaks can cause issues for some people. Additionally, you should stay away from the red buttons unless you are ABSOLUTELY sure you want to apply those tweaks. If you don't trust yourself with applying the tweaks, you can open a ticket and an available staff member can connect to your PC via AnyDesk and apply them for you. Some do it for ~$5, while others do it for free.'''
         )
         return embed
+
+
+async def customer_data(data):
+
+        description_text = (
+        f"👤 **User ID:** `{data['user_id']}`\n"
+        f"📧 **New Email:** `{data['new_email'] or 'Not Linked'}`\n"
+        f"📧 **Old Email:** `{data['old_email'] or 'Not Linked'}`\n\n"
+        f"**Premium Status:**\n"
+        f"{'✅' if data['has_premium_new'] else '❌'} New Premium\n"
+        f"{'✅' if data['has_premium_old'] else '❌'} Old Premium"
+    )
+        
+        embed = discord.Embed(title="Customer Data", description=description_text,color = 0x0000ff)
+
+        return embed

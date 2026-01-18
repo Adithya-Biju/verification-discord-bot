@@ -138,8 +138,8 @@ async def update_premium(old_data: dict, updated_data: dict):
     except IntegrityError:
         return {"success": False, "error": "Email conflict: That email belongs to another user."}
 
-    # except Exception as e:
-    #     print(e)
-    #     return {"success": False, "error": f"Unexpected error occured"}
+    except Exception as e:
+        print(e)
+        return {"success": False, "error": f"Unexpected error occured"}
 
 
