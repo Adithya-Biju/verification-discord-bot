@@ -3,6 +3,7 @@ from utility import database, update_queue, constants, embed
 from .components.email_option_modal import EmailTypeView
 from .components.userID_email_menu import KeySelectionView
 from .components.userid_modal import UserTriggerView
+from .components.confirmation_button import ConfirmationButtonView
 from .update_components.updation_modal import UpdationTriggerView 
 
 class CustomerUpdates:
@@ -203,3 +204,24 @@ If you want to make those changes then update or delete the exisiting one''', ep
 
         else: 
             await interaction.edit_original_response(content="Message timed out, please run the update comamand again",view=None)
+        
+
+    async def delete_data_customer(self,interaction: discord.Interaction, member: discord.Member):
+
+        data = await database.get_customer_record(member.id)
+
+        if data: 
+            
+            confirm_button =  ConfirmationButtonView(self.bot)
+            await interaction.followup.send(f"Are you sure you want to proceed with the deletion of the user {member.id}",view=confirm_button,ephemeral=True)
+            await confirm_button.wait()
+            delete = await database.delete_customer_record(member.id)
+            if delete:
+                await interaction.edit_original_response(content=f"Data has been deleted, ask the user to use the login again instead of updating manually", view= None)
+
+            else:
+                await interaction.edit_original_response(content="Unexpected error occured",view= False)    
+
+        else:
+            await interaction.followup.send(f"User ID not found in the database")
+        

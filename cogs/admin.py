@@ -64,6 +64,26 @@ class Admin(commands.Cog):
         except Exception as e:
             print(e)
             await interaction.followup.send("Unexpected error occured",ephemeral=True) 
+        
+    
+    @app_commands.command(name='delete', description='Insert Old premium member')
+    async def delete_customer_old(self, interaction: discord.Interaction, member: discord.Member):
+
+        await interaction.response.defer(ephemeral=True)
+
+        if interaction.permissions.administrator == False:
+                await interaction.followup.send("You don't have the permissions to user this command",ephemeral=True)
+                return
+        
+        try:
+        
+            delete = CustomerUpdates(self.bot)
+            await delete.delete_data_customer(interaction,member)
+
+        except Exception as e:
+            print(e)
+            await interaction.followup.send("Unexpected error occured",ephemeral=True) 
+
 
 async def setup(bot):
         await bot.add_cog(Admin(bot))

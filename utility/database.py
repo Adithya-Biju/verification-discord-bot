@@ -141,5 +141,44 @@ async def update_premium(old_data: dict, updated_data: dict):
     except Exception as e:
         print(e)
         return {"success": False, "error": f"Unexpected error occured"}
+    
+
+async def get_customer_record(user_id:str):
+    try:
+        async with in_transaction():
+
+            customer = await Customer.get_or_none(user_id=user_id)
+            customer_old = await CustomerOld.get_or_none(user_id=user_id)
+
+            if customer: 
+
+                data = {
+                    "user_id": user_id,
+                    "new_email": (customer.email if customer and customer.email else None),
+                    "has_premium_new": getattr(customer, 'has_premium_new', False),
+                    "has_premium_old": getattr(customer, 'has_premium_old', False),
+                    "old_email": customer_old.email if (customer_old and customer_old.email) else None
+                }
+            
+            else:
+                return None 
+
+        return data 
+    
+    except Exception as e:
+        print(e)
+        return {"success": False, "error": f"Unexpected error occured"}
 
 
+async def delete_customer_record(user_id : str):
+    
+    try:
+        async with in_transaction():
+            
+            customer_obj = await Customer.get(user_id=user_id)
+            await customer_obj.delete()
+            return {"status":True}
+    
+    except Exception as e:
+        print(e)
+        return {"status":False}
