@@ -181,6 +181,11 @@ If you want to make those changes then update or delete the exisiting one''', ep
                 data = email_type_view.current_data
                 customer_embed = await embed.customer_data(data)
                 await interaction.edit_original_response(content=None, embed=customer_embed, view=None)
+                await self.log_channel.send(
+                    f"🟢 **View**\n"
+                    f"Viewed data : {data}\n"
+                    f"Attempted by: {interaction.user.mention}"
+                )
             
             else:
                 await interaction.edit_original_response(content="Data not found", view=None)
@@ -218,6 +223,11 @@ If you want to make those changes then update or delete the exisiting one''', ep
             delete = await database.delete_customer_record(member.id)
             if delete:
                 await interaction.edit_original_response(content=f"Data has been deleted, ask the user to use the login again instead of updating manually", view= None)
+                await self.log_channel.send(
+                    f"🟢 **Deletion**\n"
+                    f"Deleted data : {data}\n"
+                    f"Attempted by: {interaction.user.mention}"
+                )
 
             else:
                 await interaction.edit_original_response(content="Unexpected error occured",view= False)    
