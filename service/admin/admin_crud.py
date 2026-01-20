@@ -228,6 +228,7 @@ If you want to make those changes then update or delete the exisiting one''', ep
                     f"Deleted data : {data}\n"
                     f"Attempted by: {interaction.user.mention}"
                 )
+                await update_queue.enqueue(member.id)
 
             else:
                 await interaction.edit_original_response(content="Unexpected error occured",view= False)    
