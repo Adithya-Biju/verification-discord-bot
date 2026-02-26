@@ -84,7 +84,24 @@ async def refund_embed():
         embed = discord.Embed(
                 title = "Refund",
                 color = 0x0000ff,
-                description= '''This is our [refund policy](https://www.exmtweaks.com/refund-policy). You can only request a refund if your EXM 2.0 purchase is at least a yearly subscription or a lifetime subscription. Please make sure you have done all the steps and wait patiently once you have sent them.  If you want to cancel your subscription, you can do it in [Billing](https://exmtweaks.com/account?tab=billing)
+                description= '''This is our full [refund policy](https://www.exmtweaks.com/refund-policy) 
+
+Refunds are only available for:
+• Yearly subscriptions
+• Lifetime subscriptions
+• For Monthly subscriptions, refunds are granted less frequently
+
+**To be considered for a refund, you must:**
+• Clearly explain the reason for your request
+• Provide proof of the issue (screenshots, screen recordings, error messages, benchmarks, or anything else depending on the problem)
+
+**We never grant refunds for:**
+• Changing your mind
+• Not canceling before renewal
+
+If a technical issue is confirmed and cannot be resolved by our support team, a refund may be issued.
+
+If you simply want to cancel your subscription, you can do so anytime in Billing. Canceling stops future charges but does not automatically qualify you for a refund.
 '''
         )
         return embed
