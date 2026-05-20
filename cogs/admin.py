@@ -84,7 +84,6 @@ class Admin(commands.Cog):
             print(e)
             await interaction.followup.send("Unexpected error occured",ephemeral=True) 
 
-
 async def setup(bot):
         await bot.add_cog(Admin(bot))
                                                   

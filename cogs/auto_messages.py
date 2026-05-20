@@ -185,5 +185,4 @@ class AutoMessages(commands.Cog):
             print(f"Unexpected Error: {e}")
 
 async def setup(bot):
-
     await bot.add_cog(AutoMessages(bot))
