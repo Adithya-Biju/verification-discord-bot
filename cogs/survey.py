@@ -63,7 +63,7 @@ class Survey(commands.Cog):
             else:
                 embed.add_field(name="Survey Data", value="⚠️ This order item didn't require any custom fields.", inline=False)
 
-            await interaction.followup.send(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed)
 
         
         except Exception as e:
